@@ -1,0 +1,183 @@
+<?php $this->headtitle('Editar Rendicion (Borrador)');?>
+<?php $this->headscript()->appendFile($this->basepath('js/create-registry.js'));?>
+<?php $this->headlink()->appendStylesheet($this->basepath('css/create-registry.css'));?>
+
+<?php $this->headscript()->appendFile('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/js/jasny-bootstrap.min.js');?>
+<?php $this->headlink()->appendStylesheet('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/css/jasny-bootstrap.min.css');?>
+
+<div class="page-header">
+	<h1><?=$this->translate('Editar Rendicion');?><small><?=$this->translate('Borrador');?></small></h1>
+</div>
+
+<?php
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('class', 'form-horizontal');
+$form->setAttribute('action', $this->url('registry/default', array('action' => 'edit'), array('query' => array('id' => $this->id))));
+?>
+
+<?=$this->form(null, 'horizontal')->openTag($form);?>
+
+	<?php if ($this->error) : ?>
+	<?=$this->alert($this->error, array('class' => 'alert alert-danger'), true);?>
+	<?php endif; ?>
+	
+	<?php $registry = $form->get('registry'); ?>
+	<?=$this->formrow($registry->get('description'));?>
+	
+	<div class="btn-toolbar">
+		<button type="button" class="btn btn-primary" data-aggregator="item" data-type="1" data-type-title="<?=$this->translate('Boleta');?>"><span class="glyphicon glyphicon-plus"></span> <?=$this->translate('Agregar Boleta')?></button>
+		<button type="button" class="btn btn-primary" data-aggregator="item" data-type="2" data-type-title="<?=$this->translate('Factura');?>"><span class="glyphicon glyphicon-plus"></span> <?=$this->translate('Agregar Factura')?></button>
+	</div>
+	<hr />
+	<div id="template"><?=$this->formcollection()->renderTemplate($registry->get('items'));?></div>
+	
+	<div class="panel-group" id="accordion">
+		<?=$this->formcollection()->renderTemplate($registry->get('items'));?>
+		<?php
+		$count = 0;
+		foreach ($registry->get('items')->getIterator() as $item) :
+			$type = $item->get('document');
+			$typeName = $type->getValue() == 1 ? 'Boleta' : 'Factura';
+		?>
+		<div class="panel panel-default <?=count($item->getMessages()) ? ' panel-danger' : '';?>" id="panel<?=$count;?>">
+			<div class="panel-heading"  data-parent="#accordion" data-toggle="collapse" data-target="#collapse<?=$count;?>">
+				<h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse<?=$count;?>"><?=$this->translate($typeName);?><span class="numberField"></span></a>
+					<span class="clear-panel pull-right"></span>
+				</h4>
+			</div>
+			<div id="collapse<?=$count;?>" class="panel-collapse collapse">
+				<div class="panel-body">
+					<?=$this->formcollection($item);?>
+					
+					<div class="form-group">
+						<div class="col-lg-offset-2 col-lg-10">
+							<?php $oItem = $item->getObject(); ?>
+							<?php foreach ($oItem->getFiles() as $file) : ?>
+							<div class="thumbnail tile tile-teal">
+								<img src="<?=$this->basepath('userfiles/' . $file->getName());?>">
+							</div>
+							<?php endforeach; ?>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-offset-2 col-lg-10">
+							<?php if (!empty($this->tempFiles[$count])) : ?>
+							<ul class="list-group">
+								<?php foreach ($this->tempFiles[$count] as $tempFile) : ?>
+								<li class="list-group-item"><?=$tempFile['name'];?></li>
+								<?php endforeach; ?>
+							</ul>
+							<?php endif; ?>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php $count++; endforeach; ?>
+	</div>
+	
+	<div class="form-group">
+		<div class="col-lg-10 col-offset-lg-2">
+			<?=$this->formhidden($form->get('formcsrf'));?>
+			<a href="<?=$this->url('registry');?>" class="btn btn-labeled btn-default"><span class="btn-label"><i class="glyphicon glyphicon-arrow-left"></i></span><?=$this->translate('Cancelar');?></a>
+			<a href="<?=$this->url('registry/default', array('action' => 'delete'), array('query' => array('id' => $this->id)));?>" class="btn btn-labeled btn-danger">
+				<span class="btn-label"><?=$this->glyphicon('remove');?></span>
+				<?=$this->translate('Descartar rendicion');?></a>
+			<button type="submit" name="task" value="draft" class="btn btn-labeled btn-info"><span class="btn-label"><i class="glyphicon glyphicon-floppy-disk"></i></span><?=$this->translate('Guardar Borrador');?></button>
+			<button type="submit" name="task" value="save" class="btn btn-labeled btn-primary"><span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span><?=$this->translate('Publicar Rendicion');?></button>
+		</div>
+	</div>
+	
+	<?php $this->inlinescript()->captureStart();?>
+	if (!Modernizr.inputtypes.date) {
+		$('input[type="date"]').datepicker({
+			format: "yyyy-mm-dd",
+			autoclose: true
+		});
+	}
+	
+	$('input[type="file"]').fancyFileInput();
+	$('.ffi').addClass('theme-bootstrap').addClass('custom-image-button');
+	var bills = $('input.documentType[value="1"]');
+	bills.each(function(i, item) {
+		var panel = $(item).closest('.panel');
+		panel.find('input.totalGross').closest('.form-group').hide(); // Hide Gross
+		panel.find('input.totalVat').closest('.form-group').hide(); // Hide VAT
+	});
+	
+	
+	$(document).on('click', '.clear-panel', function() {
+		$(this).closest('.panel').remove();
+	});
+	
+	$('button[data-aggregator="item"]').click(function() {
+		var panels = $('form > #accordion > .panel');
+		var currentCount = panels.length;
+		var template = $('#template > span').data('template');
+		template = template.replace(/__index__/g, currentCount);
+		
+		var panel = $('<div class="panel panel-default" id="panel' + currentCount + '" />');
+		var panelHeading = $('<div class="panel-heading" data-parent="#accordion" data-toggle="collapse" data-target="#collapse' + currentCount + '">'
+			+ '	<h4 class="panel-title">'
+			+ '		<a data-toggle="collapse" data-parent="#accordion" href="#collapse' + currentCount + '">' + $(this).data('type-title') + '<span class="numberField"></span></a>'
+			+ '		<span class="clear-panel pull-right"></span>'
+			+ '	</h4>'
+			+ '</div>');
+		var panelContent = $('<div id="collapse' + currentCount + '" class="panel-collapse collapse"><div class="panel-body">' + template + '</div>');
+		
+		panel.append(panelHeading, panelContent);
+		
+		$('form > #accordion').append(panel);
+		if (!Modernizr.inputtypes.date) {
+			panel.find('input[type="date"]').datepicker({
+				format: "yyyy-mm-dd",
+				autoclose: true
+			});
+		}
+		
+		panel.find('input.documentType').val($(this).data('type'));
+		
+		if ($(this).data('type') == 1) {
+			panel.find('input.totalGross').closest('.form-group').hide(); // Hide Gross
+			panel.find('input.totalVat').closest('.form-group').hide(); // Hide VAT
+		}
+		
+		panel.find('input[type="file"]').fancyFileInput();
+		panel.find('.ffi').addClass('theme-bootstrap').addClass('custom-image-button');
+        			
+		return false;
+	});
+	
+	$(function() {
+		if (!Modernizr.inputtypes.date) {
+			$(document).on('click', 'input[type="date"], input[type="date"] + span.input-group-addon > span.glyphicon-calendar', function() {
+				if ($(this).prop('tagName') == 'SPAN') {
+					$this = $(this).parent('span').prev('input');
+				} else {
+					$this = $(this);
+				}
+				$this.datepicker('show');
+			});
+		} else {
+			$(document).on('click', 'input[type="date"], input[type="date"] + span.input-group-addon > span.glyphicon-calendar', function() {
+				$this = $(this).parent('span').prev('input');
+				$this.focus();
+			});
+		}
+		
+		$(document).on('keyup', 'input.numberField', function() {
+			var spanField = $(this).parents('.panel').find('.panel-heading span.numberField').eq(0);
+			if ($(this).val() !== '' && spanField) {
+				spanField.html(': #' + $(this).val());
+		    } else {
+		    	if (spanField) {
+		    		spanField.empty();
+		    	}
+		    }
+		});
+	});
+	<?php $this->inlinescript()->captureEnd();?>
+	
+<?=$this->form()->closeTag();?>

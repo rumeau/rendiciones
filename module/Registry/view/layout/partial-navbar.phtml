@@ -1,0 +1,59 @@
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="<?=$this->basepath();?>"><?=$this->translate('Sistema de Rendiciones');?></a>
+                </div>
+                
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <?php if ($this->zfcUserIdentity()) : ?>
+                    <ul class="nav navbar-nav">
+                        <!-- SOLO SI HAY RENDICIONES NUEVAS POR REVISAR Y ES CONTROLADOR -->
+                        <?php if ($this->user()->isModerator()) : ?>
+                        <li><a href="<?=$this->url('review');?>"><?=$this->translate('Controlar');?>
+                        	<?php if ($pendingRegistries = $this->countpendingregistries()) : ?>
+                        	<small><span class="badge"><?=$pendingRegistries;?></span></small>
+                        	<?php endif; ?></a></li>
+                        <?php endif; ?>
+                        
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown"><?=$this->translate('Rendiciones');?> <b class="caret"></b></a>
+                            <ul class="dropdown-menu" data-role="dropdown">
+                            	<li><a href="<?=$this->url('registry');?>"><?=$this->translate('Mis Rendiciones');?></a></li>
+                                <li><a href="<?=$this->url('registry/default', array('action' => 'create'));?>"><?=$this->translate('Rendir');?></a></li>
+                            </ul>
+                        </li>
+                        
+                        <?php if ($this->user()->isAdmin()) : ?>
+                        <li><a href="<?=$this->url('users');?>"><?=$this->translate('Usuarios');?></a></li>
+                        <?php endif; ?>
+                    </ul>
+                    
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <input type="text" placeholder="<?=$this->translate('Buscar...');?>" class="form-control" />
+                        </div>
+                        <button class="btn btn-default"><?=$this->translate('Buscar');?></button>
+                    </form>
+                    
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="" class="navbar-avatar">
+                                <?=$this->gravatar($this->zfcUserIdentity()->getEmail(), array('img_size' => 35), array('class' => 'img-circle'));?>
+                                <?=$this->escapehtml($this->zfcUserIdentity()->getDisplayName());?>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="<?=$this->url('zfcuser/logout');?>" title="<?=$this->translate('Cerrar Sesion')?>"><span class="glyphicon glyphicon-log-out"></span></a>
+                    </ul>
+                    <?php endif; ?>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>

@@ -1,0 +1,253 @@
+<?php $registry = $this->registry; ?>
+<?php if ($registry->getNumber() !== 0) {
+	$this->headtitle(sprintf($this->translate('Rendicion No.: #%s'), str_pad($registry->getNumber(), 10, '0', STR_PAD_LEFT)));
+} else {
+	$this->headtitle('Confirmar Rendicion');
+} ?>
+
+<?php $this->headscript()->appendFile($this->basepath('/js/view-registry.js'));?>
+<?php $this->headlink()->appendStylesheet($this->basepath('/css/view-registry.css'));?>
+
+<?php $this->headscript()->appendFile('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/js/jasny-bootstrap.min.js');?>
+<?php $this->headlink()->appendStylesheet('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/css/jasny-bootstrap.min.css');?>
+
+<div class="page-header">
+	<h1><?php if ($registry->getNumber() !== 0) {
+		echo $this->translate(sprintf($this->translate('Rendicion No.: #%s'), str_pad($registry->getNumber(), 10, '0', STR_PAD_LEFT)));
+		if ($registry->getStatus() === \Registry\Entity\Registry::REGISTRY_STATUS_PENDING) {
+			echo '&nbsp;&nbsp;&nbsp;<span class="label label-warning">' . $this->translate('PENDIENTE') . '</span>';
+		}
+	} else {
+		echo $this->translate('Confirmar Rendicion');
+	} ?></h1>
+</div>
+
+	<?php if ($this->error) : ?>
+	<?=$this->alert($this->error, array('class' => 'alert alert-danger'), true);?>
+	<?php endif; ?>
+	
+	<?php
+	$description = $registry->getDescription();
+	if (!empty($description)) : ?>
+	<p class="lead"><?=$description;?></p>
+	<?php endif; ?>
+	
+	<?php
+	$total = 0;
+	$currentTotal = 0;
+	?>
+	<div class="row">
+		<?php foreach ($registry->getItems() as $item) :
+			$total = $total + $item->getItemTotal();
+			if ($item->getStatus() === 1) {
+				$currentTotal = $currentTotal + $item->getItemTotal();
+			}
+		?>
+		<div class="col-lg-4">
+			<div class="panel panel-default" data-item-status="<?=$item->getStatus();?>">
+				<div class="panel-heading">
+					<h3 class="panel-title pull-left">
+						<?=$this->translate(\Registry\Entity\Document::$types[$item->getDocument()->getId()]['label']);?>: #<?=$item->getItemNumber();?>
+					</h3>
+					
+					<?php
+					$itemDescription = $item->getDescription();
+					if (!empty($itemDescription)) : ?>
+					<span class="pull-right" data-toggle="tooltip" title="<?=$itemDescription;?>"><span class="glyphicon glyphicon-info-sign"></span></span>
+					<?php endif; ?>
+					
+					<div class="clearfix"></div>
+				</div>
+				<div class="panel-body">
+					<dl class="dl-horizontal">
+						<dt><?=$this->translate('Numero');?></dt>
+						<dd>#<?=$item->getItemNumber();?></dd>
+						<dt><?=$this->translate('RUT');?></dt>
+						<dd><?php
+							$rut = substr($item->getItemIdentifier(), 0, -1);
+							$dv = substr($item->getItemIdentifier(), -1);
+							echo number_format($rut, 0, ',', '.') . '-' . $dv;
+						?></dd>
+						<dt><?=$this->translate('Nombre');?></dt>
+						<dd><?php
+							$itemName = $item->getItemName();
+							if (!empty($itemName)) {
+								echo $this->escapehtml($itemName);
+							} else {
+								echo '--';
+							}
+						?></dd>
+						<dt><?=$this->translate('Fecha');?></dt>
+						<dd><?=$item->getItemDate()->format('d/m/Y')?></dd>
+						<?php if ($item->getDocument()->getId() === 1) : ?>
+						<dt>&nbsp;</dt>
+						<dd>&nbsp;</dd>
+						<dt>&nbsp;</dt>
+						<dd>&nbsp;</dd>
+						<?php else : ?>
+						<dt><?=$this->translate('Total Neto');?></dt>
+						<dd><?=$this->currencyformat($item->getItemGross(), 'CLP', false, 'es_CL');?></dd>
+						<dt><?=$this->translate('IVA');?></dt>
+						<dd><?=$this->currencyformat($item->getItemVat(), 'CLP', false, 'es_CL');?></dd>
+						<?php endif; ?>
+					</dl>
+				</div>
+				<div class="panel-footer clearfix ammount">
+					<div class="pull-left">
+						<p class="lead"><strong class="itemTotal" data-item-total="<?=$item->getItemTotal();?>"><?=$this->translate('Total');?>: <?=$this->currencyformat($item->getItemTotal(), 'CLP', false, 'es_CL');?></strong></p>
+					</div>
+					<div class="pull-right">
+						<button type="button" class="btn btn-labeled btn-primary" data-imagegroup="<?=$item->getId();?>">
+							<span class="btn-label">
+								<i class="glyphicon glyphicon-picture"></i>
+							</span><?=$this->translate('Ver imagenes');?></button>
+						<div class="hide imageGroup">
+							<?php foreach ($item->getFiles() as $file) : ?>
+							<a href="<?=$this->basepath('/userfiles/' . $file->getName());?>" data-lightbox="imageGroup-<?=$item->getId();?>">.</a>
+							<?php endforeach; ?>
+						</div>
+					</div>
+				</div>
+				<?php if ($this->registry($registry)->canModerate()) : ?>
+				<?php 
+				$itemStatusPending = \Registry\Entity\Item::ITEM_STATUS_PENDING;
+				$itemStatusApproved = \Registry\Entity\Item::ITEM_STATUS_APPROVED;
+				$itemStatusRejected = \Registry\Entity\Item::ITEM_STATUS_REJECTED;
+				?>
+				<div class="panel-footer text-center item-control">
+					<button type="button" data-item="<?=$item->getId();?>" data-result="1" data-ammount="<?=$item->getItemTotal();?>" class="item-control-btn btn btn-<?=($item->getStatus() !== $itemStatusPending ? ($item->getStatus() === $itemStatusApproved ? 'success' : 'default') : 'default');?><?=($item->getStatus() === $itemStatusApproved ? ' current' : '');?>"><?=$this->glyphicon('thumbs-up');?></button>
+					<button type="button" data-item="<?=$item->getId();?>" data-result="2" class="item-control-btn btn btn-<?=($item->getStatus() !== $itemStatusPending ? ($item->getStatus() === $itemStatusRejected ? 'danger' : 'default') : 'default');?><?=($item->getStatus() === $itemStatusRejected ? ' current' : '');?>"><?=$this->glyphicon('thumbs-down');?></button>
+				</div>
+				<?php endif; ?>
+			</div>
+		</div>
+		<?php endforeach; ?>
+	</div>
+	
+	<hr />
+	<dl class="dl-horizontal">
+		<dt><?=$this->translate('Total Rendido');?>:</dt>
+		<dd><?=$this->currencyformat($total, 'CLP', false, 'es_CL');?></dd>
+		<dt><span class="text-primary"><?=$this->translate('Total Aprobado');?>:</span></dt>
+		<dd><span id="approbedAmmount"><?=$this->currencyformat($currentTotal, 'CLP', false, 'es_CL');?></span></dd>
+	</dl>
+	<hr />
+	
+	<div class="btn-toolbar">
+		<form action="<?=$this->url('review/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));?>" method="post">
+			<a href="<?=$this->url('registry');?>" class="btn btn-labeled btn-default"><span class="btn-label"><i class="glyphicon glyphicon-arrow-left"></i></span><?=$this->translate('Volver');?></a>
+			<input type="hidden" name="element" value="<?=$registry->getId();?>" />
+			<?php if ($this->registry($registry)->canModerate()) : ?>
+			<?php
+			if ($this->form !== null) {
+				$form = $this->form;
+				$form->prepare();
+				
+				echo $this->formhidden($form->get('csrf'));
+			}
+			?>
+				<?php if ($this->registry($registry)->canModerate()) : ?>
+			<button type="submit" name="task" value="review" class="btn btn-labeled btn-success">
+				<span class="btn-label"><?=$this->glyphicon('ok');?></span>
+				<?=$this->translate('Finalizar revision');?></button>
+				<?php endif; ?>
+			<?php endif; ?>
+		</form>
+	</div>
+	
+	<?=$this->partial('registry/index/partial/comments-list.phtml', array('registry' => $registry, 'route' => 'review'));?>
+	<?php
+	if ($registry->getStatus() > \Registry\Entity\Registry::REGISTRY_STATUS_DRAFT) {
+		echo $this->partial('registry/index/partial/comments-form.phtml', array('registry' => $registry, 'form' => $this->commentform, 'route' => 'review'));
+	}
+	?>
+	
+	<?php $this->inlinescript()->captureStart();?>
+	$('[data-toggle="tooltip"]').tooltip();
+	$('button[data-imagegroup]').click(function() {
+		$(this).next('.imageGroup').find('a[data-lightbox]').eq(0).trigger('click');
+	});
+	
+	accounting.settings = {
+		currency: {
+			symbol : "$",
+			format: "%s%v",
+			decimal : ",",
+			thousand: ".",
+			precision : 0
+		},
+		number: {
+			precision : 0,
+			thousand: ",",
+			decimal : "."
+		}
+	};
+	function updateCurrentTotal() {
+		var panels = $('.panel[data-item-status]');
+		var currentTotal = 0;
+		panels.each(function(i, item) {
+			if ($(item).data('item-status') === 1) {
+				var value =  $(item).find('.itemTotal').data('item-total');
+				currentTotal = currentTotal + value;
+			}
+		});
+		
+		$('#approbedAmmount').html(accounting.formatMoney(currentTotal)); 
+	}
+	
+	<?php if ($this->registry($registry)->canModerate()) : ?>
+	
+	$('.item-control button.item-control-btn').click(function() {
+		$button = $(this);
+		if ($button.hasClass('current')) {
+			return false;
+		}
+		
+		$.ajax({
+			url: '<?=$this->url('review/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));?>',
+			method: 'post',
+			data: {
+				item: $button.data('item'),
+				value: $button.data('result')
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$button.data('old-value', $button.html());
+				$button.html('...');
+				$button.closest('.panel-footer').find('button').attr('disabled', true);
+			},
+			success: function(j) {
+				if (j.result) {
+					var buttonsPanel = $button.closest('.panel-footer');
+					var parentPanel = $button.closest('.panel');
+					var buttons = buttonsPanel.find('button');
+					buttons.removeClass('btn-danger');
+					buttons.removeClass('btn-success');
+					buttons.removeClass('current');
+					buttons.addClass('btn-default');
+					$button.removeClass('btn-default');
+					
+					if (j.value == 0) {
+						buttons.addClass('btn-default');
+						parentPanel.data('item-status', 0);
+					} else if (j.value == 1) {
+						buttonsPanel.find('button[data-result="1"]').addClass('btn-success').addClass('current');
+						parentPanel.data('item-status', 1);
+					} else if (j.value == 2) {
+						buttonsPanel.find('button[data-result="2"]').addClass('btn-danger').addClass('current');
+						parentPanel.data('item-status', 2);
+					}
+					
+					updateCurrentTotal();
+				}
+			},
+			complete: function() {
+				$button.html($button.data('old-value'));
+				$button.closest('.panel-footer').find('button').attr('disabled', false);
+			}
+		});
+	});
+	<?php endif; ?>
+	
+	<?php $this->inlinescript()->captureEnd();?>
+	

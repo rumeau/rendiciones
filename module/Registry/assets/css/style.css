@@ -1,0 +1,52 @@
+.clear-panel {
+	background: url(clear.png) no-repeat 0 0;
+	width:16px;
+	height:16px;
+    background-image: url(clear.svg);
+	border: none;
+    color: #333;
+    cursor: pointer;
+    line-height: 16px;
+    opacity: 0.56;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0.56)";
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    text-align: left;
+    text-indent: 999em;
+    white-space: nowrap;
+    width: 16px;
+}
+.clear-panel:hover {
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";
+}
+
+.caret.caret-up {
+    border-top-width: 0;
+    border-bottom: 4px solid;
+}
+
+.col-lg-4 dl.dl-horizontal dt {
+	width:90px;
+}
+.col-lg-4 dl.dl-horizontal dd {
+	margin-left:110px;
+}
+
+.panel .panel-footer.ammount p {
+	margin-bottom:0px;
+	font-size:18px;
+	margin-top:2px;
+}
+
+.comments {}
+.comments .media {}
+.comments .media:hover {
+	background-color:#FCFCFC;
+}
+
+
+.btn-label {
+	border-radius:0px !important;
+}

@@ -1,0 +1,19 @@
+<?php
+$form = $this->form;
+$form->prepare();
+
+?>
+<hr />
+<div class="well well-sm col-lg-6">
+	<?=$this->form(null, null)->openTag($form);?>
+	
+		<h3><?=$this->zfcuserdisplayname();?></h3>
+		
+		<?=$this->formrow($form->get('comment'));?>
+	
+		<div class="form-group text-right">
+			<button type="submit" class="btn btn-primary"><?=$this->translate('Publicar comentario');?></button>
+		</div>
+	<?=$this->form()->closeTag();?>
+</div>
+<div class="clearfix"></div>

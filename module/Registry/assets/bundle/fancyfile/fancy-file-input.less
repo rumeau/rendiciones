@@ -1,0 +1,200 @@
+@import url(_theme.less);
+
+/* The parent of the input - made to look like a text field */
+.ffi {
+    background-color: @field-bg-colour;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 3px #ddd;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #333;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 28px;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 350px;
+}
+
+
+/* The actual input - made opaque but styled so the cursor positions well */
+.ffi input[type="file"] {
+    border: none;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    font-size: inherit;
+    height: 100%;
+    line-height: 28px;
+    left: 0;
+    margin: 0;
+    opacity: 0;
+    outline: none;
+    padding: 0 5px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.ffi input[type=file][disabled] {
+    cursor: not-allowed;
+}
+
+/*
+ * This makes the cursor appear nicely within the field when you tab into it in IE10/IE11
+ * (target IE10/11 but not 9 - http://www.impressivewebs.com/ie10-css-hacks/)
+ */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .ffi input[type="file"] {
+        line-height: normal;
+    }
+}
+
+
+/* The field value */
+.ffi[data-ffi-value]:after {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #333;
+    content: attr(data-ffi-value);
+    display: block;
+    font-style: normal;
+    overflow: hidden;
+    padding: 0 5px;
+    text-overflow: ellipsis;
+    z-index: -1;
+}
+
+
+/* The "browse" button */
+.ffi:before {
+    background: #f2f2f2;
+    background: -webkit-linear-gradient(top, #ffffff 0%,#f2f2f2 100%); /* Chrome10+,Safari5.1+ */
+    background: linear-gradient(to bottom, #ffffff 0%,#f2f2f2 100%); /* W3C */
+    border-left: 1px solid #ccc;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #333;
+    content: attr(data-ffi-button-text);
+    cursor: pointer;
+    float: right;
+    line-height: 28px;
+    margin: 0;
+    padding: 0 10px;
+    white-space: nowrap;
+}
+
+/* various states for interaction */
+.ffi:hover:before {
+    background: #f7f7f7;
+    background: -webkit-linear-gradient(top, #fff 0%, #f7f7f7 100%);
+    background: linear-gradient(to bottom, #fff 0%, #f7f7f7 100%);
+    color: #000;
+}
+.ffi:active:before,
+.ffi:active:hover:before,
+.ffi:focus:before,
+.ffi:focus:hover:before {
+    background: #f7f7f7;
+    background-image:none;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,.1);
+}
+
+/* focused */
+.ffi.is-focused {
+    border-color: rgb(94, 158, 214);
+    box-shadow: 0 0 5px rgb(94, 158, 214);
+    outline: none;
+}
+
+/* HTML5 form validation */
+.ffi.is-invalid {
+    border-color: #d04437;
+}
+.ffi.is-invalid.is-focused {
+    box-shadow: 0 0 5px #d04437;
+}
+.ffi.is-valid {
+    border-color: #14892c;
+}
+.ffi.is-valid.is-focused {
+    box-shadow: 0 0 5px #14892c;
+}
+
+/* disabled */
+.ffi.is-disabled {
+    background-color: #f2f2f2;
+}
+.ffi.is-disabled:before {
+    border-color: #ccc;
+    color: #999;
+}
+.ffi.is-disabled:hover:before,
+.ffi.is-disabled:active:before,
+.ffi.is-disabled:active:hover:before,
+.ffi.is-disabled:focus:before,
+.ffi.is-disabled:focus:hover:before {
+    background: #f2f2f2;
+    background: -webkit-linear-gradient(top, #fff 0%, #f2f2f2 100%);
+    background: linear-gradient(to bottom, #fff 0%, #f2f2f2 100%);
+    box-shadow: none;
+}
+.ffi.is-disabled:hover:before {
+    color: #999;
+}
+
+
+/* The clear field button */
+.ffi-clear {
+    background: url(clear.png) no-repeat 0 0;
+    background-image: url(clear.svg);
+    border: none;
+    color: #333;
+    cursor: pointer;
+    float: right;
+    height: 16px;
+    line-height: 16px;
+    margin: 6px;
+    opacity: 0.56;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0.56)";
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    text-align: left;
+    text-indent: 999em;
+    white-space: nowrap;
+    width: 16px;
+}
+.ffi-clear:hover {
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";
+}
+
+
+@media all and (max-width : 500px) {
+    .ffi {
+        height: 30px;
+        width: 100%;
+    }
+    .ffi[data-ffi-value] {
+        height: 60px;
+    }
+    .ffi:before {
+        border-left: none;
+        border-top: 1px solid #ccc;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        position: absolute;
+        text-align: center;
+        width: auto !important;
+    }
+    .ffi[data-ffi-value]:before {
+        border-top: 1px solid #ccc;
+    }
+}

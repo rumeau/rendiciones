@@ -1,0 +1,70 @@
+<hr />
+<h2><?=$this->translate('Comentarios')?></h2>
+<div class="comments col-lg-6">
+	<?php
+	$comments = $this->registry->getComments();
+	if (!$comments->count()) :
+	?>
+	<p class="lead"><?=$this->translate('No existen comentarios');?></p>
+	<?php else : ?>
+	<?php $count = 0; foreach ($comments as $comment) : $count++;?>
+	<div class="media" id="comment-<?=$comment->getId();?>">
+		<a class="pull-left" href="<?=$this->url('registry/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));?>#comment-<?=$comment->getId();?>">
+			<strong>#<?=$count;?></strong>
+		</a>
+		<div class="media-body">
+    		<h4 class="media-heading">
+    			<?=$this->escapehtml($comment->getAuthor()->getDisplayName());?> - <small><?=$this->dateformat($comment->getCreatedDate(), 1, 3, 'es_CL', 'dd/MM/YYYY');?></small>
+    			<?php if ($this->zfcuseridentity() === $comment->getAuthor() || $this->registry($this->registry)->canModerate()) : ?>
+    			<button type="button" class="close pull-right" data-toggle="tooltip" data-remove="<?=$comment->getId();?>" title="Eliminar comentario">&times;</button></h4>
+    			<?php endif; ?>
+    		<?=$this->escapehtml($comment->getComment());?>
+    	</div>
+    </div>
+    <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
+<div class="clearfix"></div>
+
+<?php $this->inlinescript()->captureStart();?>
+	$('[data-toggle="tooltip"]').tooltip();
+	$('button[data-imagegroup]').click(function() {
+		$(this).next('.imageGroup').find('a[data-lightbox]').eq(0).trigger('click');
+	});
+	
+	$('button[data-remove]').click(function(e) {
+		if (!confirm('<?=$this->translate('Esta seguro que desea eliminar este comentario');?>')) {
+			return false;
+		}
+		
+		$button = $(this);
+		
+		$.ajax({
+			url: '<?=$this->url($this->route . '/default', array('action' => 'comment'));?>',
+			method: 'post',
+			data: {
+				comment: $button.data('remove'),
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$button.closest('.media').addClass('text-muted');
+				$button.attr('disabled', true);
+				$button.find('a').addClass('disabled');
+			},
+			success: function(j) {
+				if (j.result) {
+					$button.closest('.media').remove();
+				} else {
+					$button.closest('.media').removeClass('text-muted');
+					$button.attr('disabled', false);
+					$button.find('a').removeClass('disabled');
+					alert(j.msg);
+				}
+			}
+		});
+	});
+	
+	
+<?php $this->inlinescript()->captureEnd();?>
+		

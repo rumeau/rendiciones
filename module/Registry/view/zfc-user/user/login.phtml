@@ -1,0 +1,31 @@
+<?php
+$form = $this->loginForm;
+$form->prepare();
+$form->setAttribute('action', $this->url('zfcuser/login'));
+$form->setAttribute('method', 'post');
+?>
+
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading"><?=$this->translate('Iniciar Sesion');?></div>
+                <div class="panel-body">
+                    <?=$this->form()->openTag($form);?>
+                        <?=$this->formrow($form->get('identity')->setOption('control_plugin', 'clear'));?>
+                        
+                        <?=$this->formrow($form->get('credential')->setOption('control_plugin', 'reveal'));?>
+                        
+                        <?php if ($this->redirect): ?>
+                        <input type="hidden" name="redirect" value="<?=$this->escapeHtml($this->redirect);?>" />
+                        <?php endif ?>
+                        
+                        <?=$this->formrow($form->get('submit'));?>
+                    <?php echo $this->form()->closeTag() ?>
+                    
+                    <?php if ($this->enableRegistration) : ?>
+                    <?=$this->translate('No registrado?');?> <a href="<?php echo $this->url('zfcuser/register') . ($this->redirect ? '?redirect='.$this->redirect : '') ?>"><?=$this->translate('Registrarse!');?></a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>

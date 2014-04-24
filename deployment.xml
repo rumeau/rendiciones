@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<package xmlns="http://www.zend.com/server/deployment-descriptor/1.0" version="1.0">
+    <name>Sistema de Rendiciones</name>
+    <version>
+        <release>1.0.2</release>
+    </version>
+    <appdir>data</appdir>
+    <docroot>data/public</docroot>
+    <scriptsdir>scripts</scriptsdir>
+    <parameters>
+    <parameter display="DB Hostname" id="DB_HOSTNAME" readonly="false" required="true" type="hostname">
+      <defaultvalue>localhost</defaultvalue>
+    </parameter>
+    <parameter display="DB Username" id="DB_USERNAME" readonly="false" required="true" type="string"/>
+    <parameter display="DB Password" id="DB_PASSWORD" readonly="false" required="false" type="password"/>
+    <parameter display="DB Name" id="DB_DATABASE" readonly="false" required="true" type="string"/>
+  </parameters>
+    <persistentresources>
+    <resource>config/autoload/local.php</resource>
+    <resource>data/uploads</resource>
+    <resource>data/tmpuploads</resource>
+  </persistentresources>
+</package>

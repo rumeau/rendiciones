@@ -1,0 +1,29 @@
+<?php
+if (!$this->enableRegistration) {
+    print "Registration is disabled";
+    return;
+}
+$form = $this->registerForm;
+$form->prepare();
+$form->setAttribute('action', $this->url('zfcuser/register'));
+$form->setAttribute('method', 'post');
+?>
+
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading"><?=$this->translate('Registro');?></div>
+                <div class="panel-body">
+                    <?=$this->form()->openTag($form);?>
+                        <?php foreach ($form as $element): ?>
+                        <?=$this->formRow($element);?>
+                        <?php endforeach ?>
+                        
+                        <?php if ($this->redirect): ?>
+                        <input type="hidden" name="redirect" value="<?php echo $this->escapeHtml($this->redirect) ?>" />
+                        <?php endif ?>
+                    <?=$this->form()->closeTag();?>
+                </div>
+            </div>
+        </div>
+    </div>

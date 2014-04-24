@@ -1,0 +1,128 @@
+<?php $this->headtitle('Rendiciones');?>
+<?php $this->headscript()->appendFile($this->basepath('/js/uri.js'));?>
+
+<div class="page-header">
+	<h1><?=$this->translate('Rendiciones');?></h1>
+</div>
+
+<div class="btn-toolbar pull-right">
+	<div class="btn-group">
+		<a href="<?=$this->url('registry/default', array('action' => 'create'));?>" title="<?=$this->translate('Ingresar Rendicion');?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <?=$this->translate('Ingresar Rendicion');?></a>
+		&nbsp;&nbsp;&nbsp;
+	</div>
+	
+	<form class="form-inline pull-right" role="form">
+		<div class="form-group">
+			<label><?=$this->translate('Filtrar por');?>:</label>
+			<select class="form-control" id="filterStatus">
+				<option value="-1"<?=$this->filter===-1?' selected':'';?>><?=$this->translate('Todas');?></option>
+				<option value="1"<?=$this->filter===1?' selected':'';?>><?=$this->translate('Pendientes');?></option>
+				<option value="2"<?=$this->filter===2?' selected':'';?>><?=$this->translate('Ingresadas');?></option>
+				<option value="3"<?=$this->filter===3?' selected':'';?>><?=$this->translate('Aprobadas');?></option>
+				<option value="4"<?=$this->filter===4?' selected':'';?>><?=$this->translate('Rechazadas');?></option>
+				<option value="0"<?=$this->filter===0?' selected':'';?>><?=$this->translate('Borradores');?></option>
+			</select>
+			<?php $this->inlinescript()->captureStart(); ?>
+			$('#filterStatus').change(function() {
+				var curUrl = window.location.href;
+				var uri = URI(curUrl);
+				var query = uri.search(true);
+				window.location.href = URI(curUrl).query($.extend(query, {filter: $(this).val()}));
+			});
+			<?php $this->inlinescript()->captureEnd(); ?>
+		</div>
+	</form>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th class="col-lg-1"><?=$this->sortlink('number', 'Folio', true);?></th>
+			<th><?=$this->sortlink('date', 'Fecha');?></th>
+			<th class="col-lg-2"><?=$this->sortlink('status', 'Estado');?></th>
+			<th class="col-lg-2"><?=$this->sortlink('total', 'Monto');?></th>
+			<th class="col-lg-1"></th>
+		</tr>
+	</thead>
+	
+	<tbody>
+		<?php
+		$rowMap = array(
+			0 => '',
+			1 => 'warning',
+			2 => 'success',
+			3 => 'danger'
+		);
+		$statusLabelMap = array(
+			0 => array('class' => 'default', 'label' => $this->translate('BORRADOR'), 'content' => $this->translate('Requiere confirmacion para su ingreso')),
+			1 => array('class' => 'warning', 'label' => $this->translate('PENDIENTE'), 'content' => $this->translate('Rendicion pendiente de revision por un moderador')),
+			2 => array('class' => 'success', 'label' => $this->translate('APROBADA'), 'content' => $this->translate('La rendicion ha sido aprobada')),
+			3 => array('class' => 'danger',  'label' => $this->translate('RECHAZADA'), 'content' => $this->translate('La rendicion ha sido rechazada')),
+		);
+		?>
+		<?php if ($this->registries->count()) : ?>
+		<?php
+		foreach ($this->registries as $registry) :
+			$total = $registry['total'];
+			$registry = $registry['registry'];
+		?>
+		<tr class="<?=(array_key_exists($registry->getStatus(), $rowMap) ? $rowMap[$registry->getStatus()] : '');?>">
+			<td><?php
+				if ($registry->getStatus() === \Registry\Entity\Registry::REGISTRY_STATUS_DRAFT) {
+					echo '--';
+				} else {
+					echo str_pad($registry->getNumber(), 10, '0', STR_PAD_LEFT);
+				}
+			?></td>
+			<td><?=$registry->getCreatedDate()->format('d/m/Y H:i:s');?></td>
+			<td><?php
+				$status = $registry->getStatus();
+				echo $this->label($statusLabelMap[$status]['label'], 'label-' . $statusLabelMap[$status]['class']);
+			?></td>
+			<td><?php 
+				$items = $registry->getItems();
+				$total = 0;
+				foreach ($items as $item) {
+					$total = $total + $item->getItemTotal();
+				}
+				echo $this->currencyformat($total, 'CLP', false, 'es_CL');
+			?></td>
+			<td>
+				<?php if ($this->registry($registry)->canEdit()) : ?>
+				<a href="<?=$this->url('registry/default', array('action' => 'edit'), array('query' => array('id' => $registry->getId())));?>" title="<?=$this->translate('Editar');?>"><?=$this->glyphicon('edit');?></a>
+				<a href="<?=$this->url('registry/default', array('action' => 'delete'), array('query' => array('id' => $registry->getId())));?>" title="<?=$this->translate('Eliminar');?>"><?=$this->glyphicon('trash');?></a>
+				<?php endif; ?>
+				<?php if ($this->registry($registry)->canView()) : ?>
+				<a href="<?=$this->url('registry/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));?>" title="<?=$this->translate('Ver');?>"><?=$this->glyphicon('search');?></a>
+				<?php endif; ?>
+				
+			</td>
+		</tr>
+		<?php endforeach; ?>
+		<?php else : ?>
+		<tr>
+			<td colspan="5">
+				<p class="lead text-center text-muted"><?=$this->translate('Aun no se han ingresado rendiciones');?></p>
+			</td>
+		</tr>
+		<?php endif; ?>
+	</tbody>
+	
+	<tfoot>
+		<tr>
+			<td colspan="5"></td>
+		</tr>
+		<tr>
+			<td colspan="5">
+				<dl class="dl-horizontal">
+					<?php
+					foreach ($statusLabelMap as $slm) {
+						echo '<dt><span class=\'label label-' . $slm['class'] . '\'>' . $slm['label'] . '</span></dt>';
+						echo '<dd>' . $slm['content'] . '</dd>';
+					}
+					?>
+				</dl>
+			</td>
+		</tr>
+	</tfoot>
+</table>

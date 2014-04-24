@@ -1,0 +1,109 @@
+<?php $this->headtitle('Revisar Rendiciones');?>
+<?php $this->headscript()->appendFile($this->basepath('/js/uri.js'));?>
+
+<div class="page-header">
+	<h1><?=$this->translate('Revisar Rendiciones');?></h1>
+</div>
+
+<div class="btn-toolbar pull-right">	
+	<form class="form-inline pull-right" role="form">
+		<div class="form-group">
+			<label><?=$this->translate('Filtrar por');?>:</label>
+			<select class="form-control" id="filterStatus">
+				<option value="-1"<?=$this->filter===-1?' selected':'';?>><?=$this->translate('Todas');?></option>
+				<option value="1"<?=$this->filter===1?' selected':'';?>><?=$this->translate('Pendientes');?></option>
+				<option value="2"<?=$this->filter===2?' selected':'';?>><?=$this->translate('Aprobadas');?></option>
+				<option value="3"<?=$this->filter===3?' selected':'';?>><?=$this->translate('Rechazadas');?></option>
+			</select>
+			<?php $this->inlinescript()->captureStart(); ?>
+			$('#filterStatus').change(function() {
+				var curUrl = window.location.href;
+				var uri = URI(curUrl);
+				var query = uri.search(true);
+				window.location.href = URI(curUrl).query($.extend(query, {filter: $(this).val()}));
+			});
+			<?php $this->inlinescript()->captureEnd(); ?>
+		</div>
+	</form>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th class="col-lg-1"><?=$this->sortlink('number', 'Folio', true);?></th>
+			<th><?=$this->sortlink('date', 'Fecha');?></th>
+			<th><?=$this->sortlink('user', 'Autor');?></th>
+			<th class="col-lg-2"><?=$this->sortlink('status', 'Estado');?></th>
+			<th class="col-lg-2"><?=$this->sortlink('total', 'Monto');?></th>
+			<th class="col-lg-1"></th>
+		</tr>
+	</thead>
+	
+	<tbody>
+		<?php
+		$rowMap = array(
+			1 => 'warning',
+			2 => 'success',
+			3 => 'danger'
+		);
+		$statusLabelMap = array(
+			1 => array('class' => 'warning', 'label' => $this->translate('PENDIENTE'), 'content' => $this->translate('Rendicion pendiente de revision por un moderador')),
+			2 => array('class' => 'success', 'label' => $this->translate('APROBADA'), 'content' => $this->translate('La rendicion ha sido aprobada')),
+			3 => array('class' => 'danger',  'label' => $this->translate('RECHAZADA'), 'content' => $this->translate('La rendicion ha sido rechazada')),
+		);
+		?>
+		<?php if ($this->registries->count()) : ?>
+		<?php
+		foreach ($this->registries as $registry) :
+			$total = $registry['total'];
+			$author = $registry['user'];
+			$registry = $registry['registry'];
+		?>
+		<tr class="<?=(array_key_exists($registry->getStatus(), $rowMap) ? $rowMap[$registry->getStatus()] : '');?>">
+			<td><?=str_pad($registry->getNumber(), 10, '0', STR_PAD_LEFT);?></td>
+			<td><?=$registry->getCreatedDate()->format('d/m/Y H:i:s');?></td>
+			<td><?=$this->escapehtml($author);?>
+			<td><?php
+				$status = $registry->getStatus();
+				echo $this->label($statusLabelMap[$status]['label'], 'label-' . $statusLabelMap[$status]['class']);
+			?></td>
+			<td><?php 
+				$items = $registry->getItems();
+				$total = 0;
+				foreach ($items as $item) {
+					$total = $total + $item->getItemTotal();
+				}
+				echo $this->currencyformat($total, 'CLP', false, 'es_CL');
+			?></td>
+			<td>
+				<a href="<?=$this->url('review/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));?>" title="<?=$this->translate('Ver');?>"><?=$this->glyphicon('search');?></a>
+			</td>
+		</tr>
+		<?php endforeach; ?>
+		<?php else : ?>
+		<tr>
+			<td colspan="6">
+				<p class="lead text-center text-muted"><?=$this->translate('No existen rendiciones para revisar');?></p>
+			</td>
+		</tr>
+		<?php endif; ?>
+	</tbody>
+	
+	<tfoot>
+		<tr>
+			<td colspan="6"></td>
+		</tr>
+		<tr>
+			<td colspan="6">
+				<dl class="dl-horizontal">
+					<?php
+					foreach ($statusLabelMap as $slm) {
+						echo '<dt><span class=\'label label-' . $slm['class'] . '\'>' . $slm['label'] . '</span></dt>';
+						echo '<dd>' . $slm['content'] . '</dd>';
+					}
+					?>
+				</dl>
+			</td>
+		</tr>
+	</tfoot>
+</table>
