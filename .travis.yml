@@ -21,7 +21,7 @@ install: php travis.php
 
 script:
     - mkdir -p build/logs
-    - php ./vendor/bin/phpunit -c phpunit.xml-dist
+    - php ./vendor/bin/phpunit -c phpunit.xml.dist
     
 after_script:
   # or enable logging
