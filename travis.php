@@ -40,7 +40,7 @@ $replacement = array($dbHost, $dbName, $dbUser, $dbPass, '3306');
 $template = file_get_contents("$appDir/config/autoload/local.php.dist");
 $code = str_replace($pattern, $replacement, $template);
 file_put_contents("$appDir/config/autoload/local.php", $code);
-
+/*
 foreach ($protectFolders as $folder) {
 	$chmod = @chmod($folder, 0777);
 	if (!$chmod) {
@@ -48,4 +48,4 @@ foreach ($protectFolders as $folder) {
 		echo $err['message'] . ' on ' . $err['file'] . ' Line:' . $err['line'] . PHP_EOL;
 		break;
 	}
-}
+}*/
