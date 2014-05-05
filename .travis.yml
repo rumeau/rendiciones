@@ -1,14 +1,21 @@
 language: php
 
 php:
-    - 5.4
     - 5.5
+    - 5.4
+    - hhvm
 
 before_script:
     - mysql -e 'create database myapp_test; use myapp_test; source data/sql/schema.sql;'
     - curl -s http://getcomposer.org/installer | php
     - php composer.phar install
+    - touch ./config/autoload/local.php
+    - chmod 777 ./config/autoload/local.php
+    - chmod 777 ./data/cache
+    - chmod 777 ./data/DoctrineModule/cache
+    - chmod 777 ./data/log
+    - chmod 777 ./data/log.log
+    - chmod 777 ./data/tmpuploads
+    - chmod 777 ./data/uploads
 
 install: php travis.php
-
-script: sh -c 'cd ./module/Registry/tests && phpunit'
