@@ -13,4 +13,8 @@
         	</exclude>
     	</whitelist>
 	</filter>
+	
+	<logging>
+		<log type="coverage-clover" target="./data/log/clover.xml"/>
+	</logging>
 </phpunit>
