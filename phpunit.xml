@@ -1,0 +1,16 @@
+<phpunit bootstrap="./Bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="Registry Test Suite">
+            <directory>./module/Registry/tests/RegistryTest</directory>
+        </testsuite>
+    </testsuites>
+    
+    <filter>
+    	<whitelist processUncoveredFilesFromWhitelist="true">
+    		<directory suffix=".php">./module/Registry/src/</directory>
+    		<exclude>
+        		<directory suffix=".php">./module/Registry/src/Registry/Entity</directory>
+        	</exclude>
+    	</whitelist>
+	</filter>
+</phpunit>
