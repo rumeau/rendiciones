@@ -7,7 +7,7 @@ php:
 before_script:
     - mysql -e 'create database myapp_test; use myapp_test; source data/sql/schema.sql;'
     - curl -s http://getcomposer.org/installer | php
-    - php composer.phar install
+    - php composer.phar install --dev
     - touch ./config/autoload/local.php
     - chmod 777 ./config/autoload/local.php
     - chmod 777 ./data/cache
@@ -21,8 +21,8 @@ install: php travis.php
 
 script:
     - mkdir -p build/logs
-    - php vendor/bin/phpunit -c phpunit.xml-dist
+    - php ./vendor/bin/phpunit -c phpunit.xml-dist
     
 after_script:
   # or enable logging
-  - php vendor/bin/coveralls -v
+  - php ./vendor/bin/coveralls -v
