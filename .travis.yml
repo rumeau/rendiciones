@@ -18,3 +18,11 @@ before_script:
     - chmod 777 ./data/uploads
 
 install: php travis.php
+
+script:
+    - mkdir -p build/logs
+    - php vendor/bin/phpunit -c phpunit.xml-dist
+    
+after_script:
+  # or enable logging
+  - php vendor/bin/coveralls -v
