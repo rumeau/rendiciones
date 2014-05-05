@@ -11,4 +11,4 @@ before_script:
 
 install: php travis.php
 
-script: phpunit ./module/Registry/test
+script: sh -c 'cd ./module/Registry/tests && phpunit'
