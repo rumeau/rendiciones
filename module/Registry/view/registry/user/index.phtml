@@ -1,0 +1,91 @@
+<?php $this->headtitle('Usuarios');?>
+<?php $this->headscript()->appendFile($this->basepath('/js/uri.js'));?>
+
+<div class="page-header">
+	<h1><?=$this->translate('Usuarios');?></h1>
+</div>
+
+<div class="btn-toolbar pull-right">	
+	<div class="btn-group">
+		<a href="<?=$this->url('users/default', array('action' => 'create'));?>" title="<?=$this->translate('Crear Usuario');?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <?=$this->translate('Crear Usuario');?></a>
+		<a href="<?=$this->url('groups/default', array('action' => 'create'));?>" title="<?=$this->translate('Crear Grupo');?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <?=$this->translate('Crear Grupo');?></a>
+		&nbsp;&nbsp;&nbsp;
+	</div>
+	
+	<form class="form-inline pull-right" role="form">
+		<div class="form-group">
+			<label><?=$this->translate('Filtrar por');?>:</label>
+			<select class="form-control" id="filterStatus">
+				<option value="1"<?=$this->filter===1?' selected':'';?>><?=$this->translate('Activos');?></option>
+				<option value="2"<?=$this->filter===2?' selected':'';?>><?=$this->translate('Inactivos');?></option>
+			</select>
+			<?php $this->inlinescript()->captureStart(); ?>
+			$('#filterStatus').change(function() {
+				var curUrl = window.location.href;
+				var uri = URI(curUrl);
+				var query = uri.search(true);
+				window.location.href = URI(curUrl).query($.extend(query, {filter: $(this).val()}));
+			});
+			<?php $this->inlinescript()->captureEnd(); ?>
+		</div>
+	</form>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th><?=$this->sortlink('name', 'Nombre', true);?></th>
+			<th class="col-lg-2"><?=$this->sortlink('identity', 'RUT');?></th>
+			<th class="col-lg-2"><?=$this->sortlink('status', 'Estado');?></th>
+			<th class="col-lg-1"></th>
+		</tr>
+	</thead>
+	
+	<tbody>
+		<?php
+		$statusLabelMap = array(
+			1 => array('class' => 'info',    'label' => $this->translate('ACTIVO')),
+			2 => array('class' => 'default', 'label' => $this->translate('INACTIVO')),
+		);
+		?>
+		<?php if ($this->users->count()) : ?>
+		<?php foreach ($this->users as $user) : ?>
+		<tr>
+			<td><?=$this->escapehtml($user->getDisplayName());?></td>
+			<td><?php
+				$dv = substr($user->getIdentity(), -1);
+				$rut = substr($user->getIdentity(), 0, -1);
+				if (is_numeric($rut)) {
+					$rut = number_format($rut, 0, ',', '.');
+				}
+				echo sprintf('%s-%s', $rut, $dv);
+			?></td>
+			<td><?php
+				$status = $user->getStatus();
+				echo $this->label($statusLabelMap[$status]['label'], 'label-' . $statusLabelMap[$status]['class']);
+			?></td>
+			<td>
+				<a href="<?=$this->url('users/default', array('action' => 'edit'), array('query' => array('id' => $user->getId())));?>" title="<?=$this->translate('Editar');?>"><?=$this->glyphicon('edit');?></a>
+				<?php if ($user !== $this->zfcuseridentity()) : ?>
+				<a href="<?=$this->url('users/default', array('action' => 'delete'), array('query' => array('id' => $user->getId())));?>" title="<?=$this->translate('Eliminar');?>"><?=$this->glyphicon('trash');?></a>
+				<?php endif; ?>
+			</td>
+		</tr>
+		<?php endforeach; ?>
+		<?php else : ?>
+		<tr>
+			<td colspan="4">
+				<p class="lead text-center text-muted"><?=$this->translate('No se han encontrado usuarios');?></p>
+			</td>
+		</tr>
+		<?php endif; ?>
+	</tbody>
+	
+	<tfoot>
+		<tr>
+			<td colspan="4" class="text-center">
+				<?=$this->paginationcontrol($this->users, null, null, array('route' => 'users', 'queryParams' => array('filter' => $this->filter)));?>
+			</td>
+		</tr>
+	</tfoot>
+</table>

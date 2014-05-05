@@ -52,6 +52,9 @@ class Module implements AutoloaderProviderInterface
         	$uploaddableListener->setDefaultPath(realpath($appConfig['upload_path']));
         	//$uploaddableListener->setDefaultPath(realpath($appConfig['upload_path']) . DIRECTORY_SEPARATOR . date('mY'));
         }
+        
+        $eventManager->attachAggregate(new \Registry\Event\UserListener);
+        $eventManager->attachAggregate(new \Registry\Event\RegistryListener);
     }
     
     public function getControllerConfig()
@@ -80,5 +83,12 @@ class Module implements AutoloaderProviderInterface
                 }
             )
         );
+    }
+    
+    public function getViewHelperConfig()
+    {
+    	\Zend\View\Helper\PaginationControl::setDefaultViewPartial('layout/paginator.phtml');
+    	
+    	return array();
     }
 }

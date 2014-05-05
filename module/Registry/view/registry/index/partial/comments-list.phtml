@@ -9,7 +9,7 @@
 	<?php else : ?>
 	<?php $count = 0; foreach ($comments as $comment) : $count++;?>
 	<div class="media" id="comment-<?=$comment->getId();?>">
-		<a class="pull-left" href="<?=$this->url('registry/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));?>#comment-<?=$comment->getId();?>">
+		<a class="pull-left" href="<?=$this->url($this->route . '/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));?>#comment-<?=$comment->getId();?>">
 			<strong>#<?=$count;?></strong>
 		</a>
 		<div class="media-body">
@@ -28,43 +28,40 @@
 <div class="clearfix"></div>
 
 <?php $this->inlinescript()->captureStart();?>
-	$('[data-toggle="tooltip"]').tooltip();
-	$('button[data-imagegroup]').click(function() {
-		$(this).next('.imageGroup').find('a[data-lightbox]').eq(0).trigger('click');
-	});
+$('button[data-imagegroup]').click(function() {
+	$(this).next('.imageGroup').find('a[data-lightbox]').eq(0).trigger('click');
+});
+
+$('button[data-remove]').click(function(e) {
+	if (!confirm('<?=$this->translate('Esta seguro que desea eliminar este comentario');?>')) {
+		return false;
+	}
 	
-	$('button[data-remove]').click(function(e) {
-		if (!confirm('<?=$this->translate('Esta seguro que desea eliminar este comentario');?>')) {
-			return false;
-		}
-		
-		$button = $(this);
-		
-		$.ajax({
-			url: '<?=$this->url($this->route . '/default', array('action' => 'comment'));?>',
-			method: 'post',
-			data: {
-				comment: $button.data('remove'),
-			},
-			dataType: 'json',
-			beforeSend: function() {
-				$button.closest('.media').addClass('text-muted');
-				$button.attr('disabled', true);
-				$button.find('a').addClass('disabled');
-			},
-			success: function(j) {
-				if (j.result) {
-					$button.closest('.media').remove();
-				} else {
-					$button.closest('.media').removeClass('text-muted');
-					$button.attr('disabled', false);
-					$button.find('a').removeClass('disabled');
-					alert(j.msg);
-				}
+	$button = $(this);
+	
+	$.ajax({
+		url: '<?=$this->url($this->route . '/default', array('action' => 'comment'));?>',
+		method: 'post',
+		data: {
+			comment: $button.data('remove'),
+		},
+		dataType: 'json',
+		beforeSend: function() {
+			$button.closest('.media').addClass('text-muted');
+			$button.attr('disabled', true);
+			$button.find('a').addClass('disabled');
+		},
+		success: function(j) {
+			if (j.result) {
+				$button.closest('.media').remove();
+			} else {
+				$button.closest('.media').removeClass('text-muted');
+				$button.attr('disabled', false);
+				$button.find('a').removeClass('disabled');
+				alert(j.msg);
 			}
-		});
+		}
 	});
-	
-	
+});
 <?php $this->inlinescript()->captureEnd();?>
 		

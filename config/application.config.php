@@ -9,16 +9,17 @@ return array(
         
         'Application',
         
-        //'ZfSnapPhpDebugBar',
-        
         'ZfcBase',
         'ZfcUser',
         'ZfcUserDoctrineORM',
         'BjyAuthorize',
         
-        'Registry',
-        'TwbBundle',
-    	'FlashMessenger'
+    	'TwbBundle',
+    	'FlashMessenger',
+    	
+    	'Registry',
+    		
+    	//'ZfSnapPhpDebugBar',
     ),
 
     // These are various options for the listeners attached to the ModuleManager

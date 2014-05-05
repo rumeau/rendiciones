@@ -1,0 +1,30 @@
+<?php $this->headtitle('Eliminar usuario'); ?>
+
+<?php
+$form = $this->form;
+$form->prepare();
+
+$form->setAttribute('action', $this->url('users/default', array('action' => 'delete'), array('query' => array('id' => $this->id))));
+?>
+
+<div class="page-header">
+	<h2><?=$this->translate('Eliminar usuario');?></h2>
+</div>
+
+<div class="well well-lg">
+	<?=$this->form()->openTag($form);?>
+	<div class="text-center">
+		<p><?=sprintf($this->translate('Esta seguro que desea eliminar el usuario <strong>%s</strong>, esta operacion no se puede deshacer'), $this->user->getDisplayName());?></p>
+		
+		<?=$this->formelement($form->get('element'));?>
+		<?=$this->formelement($form->get('csrf'));?>
+		
+		<a href="<?=$this->url('users');?>" class="btn btn-labeled btn-default">
+			<span class="btn-label"><?=$this->glyphicon('arrow-left');?></span>
+			<?=$this->translate('Volver');?></a>
+		<button type="submit" class="btn btn-labeled btn-danger">
+			<span class="btn-label"><?=$this->glyphicon('remove');?></span>
+			<?=$this->translate('Confirmar Eliminacion');?></button>
+	</div>
+	<?=$this->form()->closeTag();?>
+</div>

@@ -10,6 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Table(name="item")
  * @ORM\Entity
+ * @Gedmo\Loggable
  */
 class Item
 {
@@ -52,7 +53,8 @@ class Item
     /**
      * @var integer
      *
-     * @ORM\Column(name="status", type="integer", length=1, precision=0, scale=0, nullable=true, unique=false)
+     * @ORM\Column(name="`status`", type="integer", length=1, precision=0, scale=0, nullable=true, unique=false)
+     * @Gedmo\Versioned
      */
     private $status = self::ITEM_STATUS_PENDING;
 
@@ -120,7 +122,7 @@ class Item
      *
      * @ORM\ManyToOne(targetEntity="Registry\Entity\Registry", inversedBy="items")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="registry_id", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="registry_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * })
      */
     private $registry;
@@ -132,6 +134,7 @@ class Item
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="document_id", referencedColumnName="id", nullable=false)
      * })
+     * @Gedmo\Versioned
      */
     private $document;
 
@@ -142,13 +145,14 @@ class Item
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id", nullable=true)
      * })
+     * @Gedmo\Versioned
      */
     private $modifiedBy;
     
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="Registry\Entity\File", mappedBy="item", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="Registry\Entity\File", mappedBy="item", cascade={"all"}, orphanRemoval=true)
      */
     private $files;
 
@@ -536,7 +540,7 @@ class Item
     public function addFile(\Registry\Entity\File $file)
     {
     	$file->setItem($this);
-        $this->file[] = $file;
+        $this->files[] = $file;
 
         return $this;
     }
@@ -557,7 +561,8 @@ class Item
      */
     public function removeFile(\Registry\Entity\File $file)
     {
-        $this->file->removeElement($file);
+        $this->files->removeElement($file);
+        $file->setItem(null);
     }
     
     public function removeFiles(\Doctrine\Common\Collections\Collection $files)

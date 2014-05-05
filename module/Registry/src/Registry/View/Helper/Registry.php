@@ -33,9 +33,27 @@ class Registry extends AbstractHelper
 	public function canModerate()
 	{
 		$isModerator = $this->getView()->plugin('user');
-		if ($isModerator->isModerator() && $this->getRegistry()->getStatus() === RegistryEntity::REGISTRY_STATUS_PENDING) {
+		if (!$isModerator->isModerator()) {
+			return false;
+		}
+		
+		$identity = $this->getView()->plugin('zfcuseridentity');
+		$moderatedGroups = $identity()->getModeratedGroups();
+		$author = $this->getRegistry()->getUser();
+		
+		if (!$moderatedGroups->contains($author->getUserGroup())) {
+			return false;
+		}
+		
+		if ($this->getRegistry()->getStatus() >= RegistryEntity::REGISTRY_STATUS_PENDING
+			&& $this->getRegistry()->getStatus() <= RegistryEntity::REGISTRY_STATUS_REJECTED
+		) {
 			return true;
 		}
+		
+		return false;
+		
+		
 		
 		return false;
 	}
@@ -82,6 +100,29 @@ class Registry extends AbstractHelper
 		if ($isModerator->isModerator() && $this->getRegistry()->getStatus() === RegistryEntity::REGISTRY_STATUS_PENDING) {
 			return true;
 		} elseif ($this->getRegistry()->getUser() === $this->getIdentity() && $this->getRegistry()->getStatus() !== RegistryEntity::REGISTRY_STATUS_DRAFT) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function canClose()
+	{
+		$isModerator = $this->getView()->plugin('user');
+		if ($isModerator->isModerator() && $this->getRegistry()->getStatus() === RegistryEntity::REGISTRY_STATUS_PENDING) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function canReopen()
+	{
+		$isModerator = $this->getView()->plugin('user');
+		if ($isModerator->isModerator()
+			&& $this->getRegistry()->getStatus() > RegistryEntity::REGISTRY_STATUS_PENDING
+			&& $this->getRegistry()->getStatus() <= RegistryEntity::REGISTRY_STATUS_REJECTED
+		) {
 			return true;
 		}
 		

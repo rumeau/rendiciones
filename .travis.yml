@@ -1,0 +1,15 @@
+language: php
+
+php:
+    - 5.4
+    - 5.5
+
+before_script:
+    - mysql -e 'create database myapp_test; use myapp_test; source data/sql/schema.sql;'
+    - curl -s http://getcomposer.org/installer | php
+    - php composer.phar install
+
+install: php travis.php
+
+script: sh -c 'cd module/Registry/test' && phpunit
+    

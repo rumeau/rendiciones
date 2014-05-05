@@ -1,0 +1,30 @@
+<?php $this->headtitle('Eliminar grupo'); ?>
+
+<?php
+$form = $this->form;
+$form->prepare();
+
+$form->setAttribute('action', $this->url('groups/default', array('action' => 'delete'), array('query' => array('id' => $this->group->getId()))));
+?>
+
+<div class="page-header">
+	<h2><?=$this->translate('Eliminar grupo');?></h2>
+</div>
+
+<div class="well well-lg">
+	<?=$this->form()->openTag($form);?>
+	<div class="text-center">
+		<p><?=sprintf($this->translate('Esta seguro que desea eliminar el grupo <strong>%s</strong>, esta operacion no se puede deshacer'), $this->group->getName());?></p>
+		
+		<?=$this->formelement($form->get('element'));?>
+		<?=$this->formelement($form->get('csrf'));?>
+		
+		<a href="<?=$this->url('users');?>" class="btn btn-labeled btn-default">
+			<span class="btn-label"><?=$this->glyphicon('arrow-left');?></span>
+			<?=$this->translate('Volver');?></a>
+		<button type="submit" class="btn btn-labeled btn-danger">
+			<span class="btn-label"><?=$this->glyphicon('remove');?></span>
+			<?=$this->translate('Confirmar Eliminacion');?></button>
+	</div>
+	<?=$this->form()->closeTag();?>
+</div>

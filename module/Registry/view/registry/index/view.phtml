@@ -130,6 +130,8 @@
 	<dl class="dl-horizontal">
 		<dt><?=$this->translate('Total Rendido');?>:</dt>
 		<dd><?=$this->currencyformat($total, 'CLP', false, 'es_CL');?></dd>
+		<dt><span class="text-primary"><?=$this->translate('Total Aprobado');?>:</span></dt>
+		<dd><span id="approbedAmmount"><?=$this->currencyformat($currentTotal, 'CLP', false, 'es_CL');?></span></dd>
 	</dl>
 	<hr />
 	

@@ -17,14 +17,14 @@
                     <ul class="nav navbar-nav">
                         <!-- SOLO SI HAY RENDICIONES NUEVAS POR REVISAR Y ES CONTROLADOR -->
                         <?php if ($this->user()->isModerator()) : ?>
-                        <li><a href="<?=$this->url('review');?>"><?=$this->translate('Controlar');?>
+                        <li><a href="<?=$this->url('review');?>"><?=$this->glyphicon('check');?>&nbsp;<?=$this->translate('Controlar');?>
                         	<?php if ($pendingRegistries = $this->countpendingregistries()) : ?>
                         	<small><span class="badge"><?=$pendingRegistries;?></span></small>
                         	<?php endif; ?></a></li>
                         <?php endif; ?>
                         
                         <li class="dropdown">
-                            <a class="dropdown-toggle" href="#" data-toggle="dropdown"><?=$this->translate('Rendiciones');?> <b class="caret"></b></a>
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown"><?=$this->glyphicon('list');?>&nbsp;<?=$this->translate('Rendiciones');?> <b class="caret"></b></a>
                             <ul class="dropdown-menu" data-role="dropdown">
                             	<li><a href="<?=$this->url('registry');?>"><?=$this->translate('Mis Rendiciones');?></a></li>
                                 <li><a href="<?=$this->url('registry/default', array('action' => 'create'));?>"><?=$this->translate('Rendir');?></a></li>
@@ -32,16 +32,10 @@
                         </li>
                         
                         <?php if ($this->user()->isAdmin()) : ?>
-                        <li><a href="<?=$this->url('users');?>"><?=$this->translate('Usuarios');?></a></li>
+                        <li><a href="<?=$this->url('users');?>"><?=$this->glyphicon('user');?>&nbsp;<?=$this->translate('Usuarios');?></a></li>
+                        <li><a href="<?=$this->url('groups');?>"><?=$this->glyphicon('tags');?>&nbsp;&nbsp;<?=$this->translate('Grupos');?></a></li>
                         <?php endif; ?>
                     </ul>
-                    
-                    <form class="navbar-form navbar-left">
-                        <div class="form-group">
-                            <input type="text" placeholder="<?=$this->translate('Buscar...');?>" class="form-control" />
-                        </div>
-                        <button class="btn btn-default"><?=$this->translate('Buscar');?></button>
-                    </form>
                     
                     <ul class="nav navbar-nav navbar-right">
                         <li>

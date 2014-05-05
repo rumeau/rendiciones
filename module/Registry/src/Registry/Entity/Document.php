@@ -36,14 +36,14 @@ class Document
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", precision=0, scale=0, nullable=false, unique=false)
+     * @ORM\Column(name="`name`", type="string", precision=0, scale=0, nullable=false, unique=false)
      */
     private $name;
     
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", precision=0, scale=0, nullable=false, unique=false)
+     * @ORM\Column(name="`type`", type="string", precision=0, scale=0, nullable=false, unique=false)
      */
     private $type;
 

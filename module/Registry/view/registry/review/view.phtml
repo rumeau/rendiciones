@@ -12,14 +12,19 @@
 <?php $this->headlink()->appendStylesheet('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/css/jasny-bootstrap.min.css');?>
 
 <div class="page-header">
-	<h1><?php if ($registry->getNumber() !== 0) {
-		echo $this->translate(sprintf($this->translate('Rendicion No.: #%s'), str_pad($registry->getNumber(), 10, '0', STR_PAD_LEFT)));
-		if ($registry->getStatus() === \Registry\Entity\Registry::REGISTRY_STATUS_PENDING) {
-			echo '&nbsp;&nbsp;&nbsp;<span class="label label-warning">' . $this->translate('PENDIENTE') . '</span>';
+	<h1>
+		<?php
+		if ($registry->getStatus() > \Registry\Entity\Registry::REGISTRY_STATUS_PENDING) {
+			echo '<small>' . $this->glyphicon('lock') . '</small>';
 		}
-	} else {
-		echo $this->translate('Confirmar Rendicion');
-	} ?></h1>
+		?>
+		<?=$this->translate(sprintf($this->translate('Rendicion No.: #%s'), str_pad($registry->getNumber(), 10, '0', STR_PAD_LEFT)));?>
+		<?php
+		if ($registry->getStatus() === \Registry\Entity\Registry::REGISTRY_STATUS_PENDING) {
+			echo '&nbsp;&nbsp;&nbsp;' . $this->label($this->translate('PENDIENTE'), 'label-warning');
+		}
+		?>
+	</h1>
 </div>
 
 	<?php if ($this->error) : ?>
@@ -42,9 +47,17 @@
 			if ($item->getStatus() === 1) {
 				$currentTotal = $currentTotal + $item->getItemTotal();
 			}
+			$panelColor = ' panel-default';
+			if ($registry->getStatus() > \Registry\Entity\Registry::REGISTRY_STATUS_PENDING) {
+				if ($item->getStatus() === 1) {
+					$panelColor = ' panel-success';
+				} elseif ($item->getStatus() === 2) {
+					$panelColor = ' panel-danger';
+				}
+			}
 		?>
 		<div class="col-lg-4">
-			<div class="panel panel-default" data-item-status="<?=$item->getStatus();?>">
+			<div class="panel<?=$panelColor;?>" data-item-status="<?=$item->getStatus();?>">
 				<div class="panel-heading">
 					<h3 class="panel-title pull-left">
 						<?=$this->translate(\Registry\Entity\Document::$types[$item->getDocument()->getId()]['label']);?>: #<?=$item->getItemNumber();?>
@@ -108,7 +121,7 @@
 						</div>
 					</div>
 				</div>
-				<?php if ($this->registry($registry)->canModerate()) : ?>
+				<?php if ($this->registry($registry)->canClose()) : ?>
 				<?php 
 				$itemStatusPending = \Registry\Entity\Item::ITEM_STATUS_PENDING;
 				$itemStatusApproved = \Registry\Entity\Item::ITEM_STATUS_APPROVED;
@@ -146,10 +159,16 @@
 				echo $this->formhidden($form->get('csrf'));
 			}
 			?>
-				<?php if ($this->registry($registry)->canModerate()) : ?>
+				<?php if ($this->registry($registry)->canClose()) : ?>
 			<button type="submit" name="task" value="review" class="btn btn-labeled btn-success">
 				<span class="btn-label"><?=$this->glyphicon('ok');?></span>
 				<?=$this->translate('Finalizar revision');?></button>
+				<?php endif; ?>
+				
+				<?php if ($this->registry($registry)->canReopen()) : ?>
+			<button type="submit" name="task" value="reopen" class="btn btn-labeled btn-success">
+				<span class="btn-label"><?=$this->glyphicon('folder-open');?></span>
+				<?=$this->translate('Re-Abrir rendicion');?></button>
 				<?php endif; ?>
 			<?php endif; ?>
 		</form>
@@ -195,7 +214,7 @@
 		$('#approbedAmmount').html(accounting.formatMoney(currentTotal)); 
 	}
 	
-	<?php if ($this->registry($registry)->canModerate()) : ?>
+	<?php if ($this->registry($registry)->canClose()) : ?>
 	
 	$('.item-control button.item-control-btn').click(function() {
 		$button = $(this);

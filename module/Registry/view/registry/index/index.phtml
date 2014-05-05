@@ -110,7 +110,9 @@
 	
 	<tfoot>
 		<tr>
-			<td colspan="5"></td>
+			<td colspan="5" class="text-center">
+                <?=$this->paginationcontrol($this->registries, null, null, array('route' => 'registry', 'queryParams' => array('filter' => $this->filter)));?>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="5">

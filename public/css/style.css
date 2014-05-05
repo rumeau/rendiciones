@@ -21,5 +21,17 @@
 	margin-right:5px;
 }
 
+.form-horizontal .control.radio, .form-horizontal .control.checkbox {
+	display:table;
+	padding-left:0px;
+	margin-bottom:3px;
+}
+.checkbox input[type="checkbox"]:checked ~ .checkbox-label:after {
+	margin-top:-5px;
+	margin-left:5px;
+}
 
-
+.switchcontrol .checkbox {
+	padding-left:0px;
+	padding-top:0px;
+}

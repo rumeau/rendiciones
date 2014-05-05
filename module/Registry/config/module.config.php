@@ -7,6 +7,7 @@ return array(
             'Registry\Controller\Index' => 'Registry\Controller\IndexController',
         	'Registry\Controller\Review' => 'Registry\Controller\ReviewController',
         	'Registry\Controller\User' => 'Registry\Controller\UserController',
+            'Registry\Controller\Group' => 'Registry\Controller\GroupController',
         ),
     ),
 		
@@ -141,6 +142,33 @@ return array(
         			),
         		),
         	),
+            'groups' => array(
+            	'type' => 'Zend\Mvc\Router\Http\Literal',
+            	'options' => array(
+            		// Change this to something specific to your module
+            		'route'    => '/groups',
+            		'defaults' => array(
+            			'__NAMESPACE__' => 'Registry\Controller',
+            			'controller' => 'Group',
+            			'action' => 'index'
+            		),
+            	),
+            	'may_terminate' => true,
+            	'child_routes' => array(
+            		'default' => array(
+            			'type'    => 'Segment',
+            			'options' => array(
+            				'route'    => '/[:action]',
+            				'default' => array(
+            					'action' => 'index',
+            				),
+            				'constraints' => array(
+            					'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            				),
+            			),
+           			),
+           		),
+            ),
         ),
     ),
 		
@@ -155,7 +183,7 @@ return array(
 			'Registry\Service\DirectoryWidcard' => 'Registry\Service\DirectoryWildcardServiceFactory',
 		),
 		'invokables' => array(
-			'Gedmo\Uploadable' => 'Gedmo\Uploadable\UploadableListener',	
+			'Gedmo\Uploadable' => 'Gedmo\Uploadable\UploadableListener',
 		),
 	),
 	
@@ -184,6 +212,7 @@ return array(
     	),
     	'invokables' => array(
     		'registry' => 'Registry\View\Helper\Registry',
+    		'formMultiCheckbox' => 'Registry\Form\View\Helper\FormMultiCheckbox',
     	),
     ),
     'view_helper_config' => array(
@@ -249,6 +278,8 @@ return array(
                     'bootstrap.js',
                 	'modernizr.js',
                 ),
+                
+                // Create Registry
             	'css/create-registry.css' => array(
             		'datepicker.css',
             		'fancy-file-input.css' => 'assets/bundle/fancyfile/fancy-file-input.css',
@@ -258,7 +289,8 @@ return array(
             		'datepicker.js',
             		'fancyfile.js' => 'assets/bundle/fancyfile/fancy-file-input.js',
             	),
-            		
+            	
+                // View Registry
             	'js/view-registry.js' => array(
             		'assets/bundle/lightbox/js/lightbox.min.js',
             		'assets/js/accounting.min.js',
@@ -266,6 +298,25 @@ return array(
             	'css/view-registry.css' => array(
             		'assets/bundle/lightbox/css/lightbox.css',
             	),
+            	
+                // Users
+            	'js/users.js' => array(
+            		'assets/bundle/switch/js/bootstrap-switch.min.js',
+            	    'assets/bundle/select/bootstrap-select.min.js'
+            	    
+            	),
+            	'css/users.css' => array(
+            		'assets/bundle/switch/css/bootstrap3/bootstrap-switch.min.css',
+            	    'assets/bundle/select/bootstrap-select.min.css'
+            	),
+                
+                // Groups
+                'js/groups.js' => array(
+                    'assets/bundle/select/bootstrap-select.min.js'
+                ),
+                'css/groups.css' => array(
+                    'assets/bundle/select/bootstrap-select.min.css'
+                ),
             ),
             'map' => array(
                 'jquery.js' => __DIR__ . '/../assets/js/jquery-2.1.0.js',
@@ -288,6 +339,8 @@ return array(
             	'img/next.png' => __DIR__ . '/../assets/bundle/lightbox/img/next.png',
             	'img/close.png' => __DIR__ . '/../assets/bundle/lightbox/img/close.png',
             	'img/loading.gif' =>  __DIR__ . '/../assets/bundle/lightbox/img/loading.gif',
+            		
+            	'docs/font-awesome.css' => __DIR__ . '/../assets/docs/font-awesome.css',
             ),
         	'paths' => array(
         		__DIR__ . '/../'

@@ -10,11 +10,15 @@ use ZfcUser\Entity\UserInterface;
 /**
  * User
  *
- * @ORM\Table(name="user")
+ * @ORM\Table(name="`user`")
  * @ORM\Entity
+ * @Gedmo\Loggable
  */
 class User implements UserInterface, ProviderInterface
 {
+	const USER_STATUS_ACTIVE = 1;
+	const USER_STATUS_INACTIVE = 2;
+	
     /**
      * @var integer
      *
@@ -27,7 +31,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255, precision=0, scale=0, nullable=true, unique=false)
+     * @ORM\Column(name="`name`", type="string", length=255, precision=0, scale=0, nullable=true, unique=false)
      */
     private $name;
 
@@ -42,6 +46,7 @@ class User implements UserInterface, ProviderInterface
      * @var string
      *
      * @ORM\Column(name="credential", type="string", length=100, precision=0, scale=0, nullable=false, unique=false)
+     * @Gedmo\Versioned
      */
     private $credential;
 
@@ -49,6 +54,7 @@ class User implements UserInterface, ProviderInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=100, precision=0, scale=0, nullable=false, unique=false)
+     * @Gedmo\Versioned
      */
     private $email;
 
@@ -84,6 +90,7 @@ class User implements UserInterface, ProviderInterface
      * @var array
      *
      * @ORM\Column(name="options", type="array", precision=0, scale=0, nullable=true, unique=false)
+     * @Gedmo\Versioned
      */
     private $options;
 
@@ -100,15 +107,17 @@ class User implements UserInterface, ProviderInterface
      *
      * @ORM\Column(name="modified_date", type="datetime", precision=0, scale=0, nullable=true, unique=false)
      * @Gedmo\Timestampable(on="update")
+     * @Gedmo\Versioned
      */
     private $modifiedDate;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="status", type="integer", length=1, precision=0, scale=0, nullable=true, unique=false)
+     * @ORM\Column(name="`status`", type="integer", length=1, precision=0, scale=0, nullable=true, unique=false)
+     * @Gedmo\Versioned
      */
-    private $status;
+    private $status = 1;
 
     /**
      * @var string
@@ -145,6 +154,31 @@ class User implements UserInterface, ProviderInterface
      * )
      */
     private $userRoles;
+    
+    /**
+     * @var \Registry\Entity\UserGroup
+     *
+     * @ORM\ManyToOne(targetEntity="Registry\Entity\UserGroup", inversedBy="users")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $userGroup;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Registry\Entity\UserGroup", inversedBy="moderators")
+     * @ORM\JoinTable(name="moderatorgrouplinker",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="moderator_id", referencedColumnName="id", nullable=false)
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
+     *   }
+     * )
+     */
+    private $moderatedGroups;
 
     /**
      * Constructor
@@ -154,6 +188,7 @@ class User implements UserInterface, ProviderInterface
         $this->registries = new \Doctrine\Common\Collections\ArrayCollection();
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->userRoles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->moderatedGroups = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -556,6 +591,15 @@ class User implements UserInterface, ProviderInterface
 
         return $this;
     }
+    
+    public function addUserRoles(\Doctrine\Common\Collections\Collection $userRoles)
+    {
+    	foreach ($userRoles as $userRole) {
+    		$this->addUserRole($userRole);
+    	}
+    	
+    	return $this;
+    }
 
     /**
      * Remove userRole
@@ -566,6 +610,13 @@ class User implements UserInterface, ProviderInterface
     {
         $this->userRoles->removeElement($userRole);
     }
+    
+    public function removeUserRoles(\Doctrine\Common\Collections\Collection $userRoles)
+    {
+    	foreach ($userRoles as $userRole) {
+    		$this->removeUserRole($userRole);
+    	}
+    }
 
     /**
      * Get userRole
@@ -575,6 +626,79 @@ class User implements UserInterface, ProviderInterface
     public function getUserRoles()
     {
         return $this->userRoles;
+    }
+    
+    /**
+     * Set userGroup
+     *
+     * @param \Registry\Entity\UserGroup $userGroup
+     * @return User
+     */
+    public function setUserGroup(\Registry\Entity\UserGroup $userGroup)
+    {
+    	$this->userGroup = $userGroup;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get userGroup
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserGroup()
+    {
+    	return $this->userGroup;
+    }
+    
+    /**
+     * Add moderatedGroup
+     *
+     * @param \Registry\Entity\UserGroup $moderatedGroup
+     * @return User
+     */
+    public function addModeratedGroup(\Registry\Entity\UserGroup $moderatedGroup)
+    {
+        $moderatedGroup->addModerator($this);
+    	$this->moderatedGroups[] = $moderatedGroup;
+    
+    	return $this;
+    }
+    
+    public function addModeratedGroups(\Doctrine\Common\Collections\Collection $moderatedGroups)
+    {
+    	foreach ($moderatedGroups as $moderatedGroup) {
+    		$this->addModeratedGroup($moderatedGroup);
+    	}
+    	 
+    	return $this;
+    }
+    
+    /**
+     * Remove moderatedGroup
+     *
+     * @param \Registry\Entity\UserGroup $moderatedGroup
+     */
+    public function removeModeratedGroup(\Registry\Entity\UserGroup $moderatedGroup)
+    {
+        $this->moderatedGroups->removeElement($moderatedGroup);
+    }
+    
+    public function removeModeratedGroups(\Doctrine\Common\Collections\Collection $moderatedGroups)
+    {
+    	foreach ($moderatedGroups as $moderatedGroup) {
+    		$this->removeModeratedGroup($moderatedGroup);
+    	}
+    }
+    
+    /**
+     * Get userGroups
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getModeratedGroups()
+    {
+    	return $this->moderatedGroups;
     }
     
     /**

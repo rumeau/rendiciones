@@ -1,0 +1,46 @@
+<?php
+$reuseParams = isset($this->reuseParams) ? $this->reuseParams : true;
+$queryParams = array();
+if ($this->queryParams) {
+	if (!is_array($this->queryParams)) {
+		$this->queryParams = array($this->queryParams);
+	}
+	$queryParams = array('query' => $this->queryParams);
+}
+
+if(!function_exists('addQueryPage')) {
+    function addQueryPage($page = 1) {
+    	global $queryParams;
+    	
+    	$queryParams = array_merge($queryParams, array('query' => array('id' => $page)));
+    	return $queryParams;
+    }
+}
+?>
+
+<?php if ($this->pageCount) : ?>
+<ul class="pagination pagination-sm">
+	<!-- Previous page link -->
+	<?php if (isset($this->previous)) : ?>
+	<li><a href="<?=$this->url($this->route, null, addQueryPage($this->previous), $reuseParams);?>">&laquo;</a></li>
+	<?php else: ?>
+	<li class="disabled"><span>&laquo;</span></li>
+	<?php endif; ?>
+	
+	<!-- Numbered page links -->
+	<?php foreach ($this->pagesInRange as $page) : ?>
+	<?php if ($page != $this->current): ?>
+	<li><a href="<?=$this->url($this->route, null, addQueryPage($page), $reuseParams);?>"><?=$page;?></a></li>
+	<?php else: ?>
+	<li class="active"><span><?=$page;?></span></li>
+	<?php endif; ?>
+	<?php endforeach; ?>
+	
+	<!-- Next page link -->
+	<?php if (isset($this->next)): ?>
+	<li><a href="<?=$this->url($this->route, null, addQueryPage($this->next), $reuseParams);?>">&raquo;</a></li>
+	<?php else: ?>
+	<li class="disabled"><span>&raquo;</span></li>
+	<?php endif; ?>
+</ul>
+<?php endif; ?>

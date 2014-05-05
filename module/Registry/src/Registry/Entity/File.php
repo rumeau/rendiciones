@@ -34,7 +34,7 @@ class File
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", precision=0, scale=0, nullable=true, unique=false)
+     * @ORM\Column(name="`name`", type="string", precision=0, scale=0, nullable=true, unique=false)
      * @Gedmo\UploadableFileName
      */
     private $name;
@@ -60,7 +60,7 @@ class File
      *
      * @ORM\ManyToOne(targetEntity="Registry\Entity\Item", inversedBy="files")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="itemId", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="itemId", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * })
      */
     private $item;
@@ -70,7 +70,7 @@ class File
      *
      * @ORM\ManyToOne(targetEntity="Registry\Entity\Registry", inversedBy="files")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="registryId", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="registryId", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * })
      */
     private $registry;

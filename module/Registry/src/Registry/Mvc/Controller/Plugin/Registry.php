@@ -28,7 +28,22 @@ class Registry extends AbstractPlugin
 	public function canModerate()
 	{
 		$isModerator = $this->getController()->isModerator();
-		if ($isModerator && $this->getRegistry()->getStatus() === RegistryEntity::REGISTRY_STATUS_PENDING) {
+		
+		if (!$isModerator) {
+		    return false;
+		}
+		
+		$identity = $this->getController()->zfcUserAuthentication()->getIdentity();
+		$moderatedGroups = $identity->getModeratedGroups();
+		$author = $this->getRegistry()->getUser();
+		
+		if (!$moderatedGroups->contains($author->getUserGroup())) {
+		    return false;
+		}
+		
+		if ($this->getRegistry()->getStatus() >= RegistryEntity::REGISTRY_STATUS_PENDING
+			&& $this->getRegistry()->getStatus() <= RegistryEntity::REGISTRY_STATUS_REJECTED
+		) {
 			return true;
 		}
 		
@@ -74,7 +89,7 @@ class Registry extends AbstractPlugin
 	public function canView()
 	{
 		$isModerator = $this->getController()->isModerator();
-		if ($isModerator && $this->getRegistry()->getStatus() === RegistryEntity::REGISTRY_STATUS_PENDING) {
+		if ($isModerator && $this->getRegistry()->getStatus() > RegistryEntity::REGISTRY_STATUS_PENDING) {
 			return true;
 		} elseif ($this->getRegistry()->getUser() === $this->getIdentity()) {
 			return true;
@@ -83,6 +98,34 @@ class Registry extends AbstractPlugin
 		return false;
 	}
 	
+	public function canClose()
+	{
+		$isModerator = $this->getController()->isModerator();
+		if ($isModerator && $this->getRegistry()->getStatus() === RegistryEntity::REGISTRY_STATUS_PENDING) {
+			return true;
+		}
+	
+		return false;
+	}
+	
+	public function canReopen()
+	{
+		$isModerator = $this->getController()->isModerator();
+		if ($isModerator
+			&& $this->getRegistry()->getStatus() > RegistryEntity::REGISTRY_STATUS_PENDING
+			&& $this->getRegistry()->getStatus() <= RegistryEntity::REGISTRY_STATUS_REJECTED
+		) {
+			return true;
+		}
+	
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @throws \Exception
+	 * @return RegistryEntity
+	 */
 	protected function getRegistry()
 	{
 		if ($this->registry === null || !$this->registry instanceof RegistryEntity) {

@@ -12,6 +12,7 @@ use Zend\Db\Sql\Ddl\Column\Integer;
  *
  * @ORM\Table(name="registry")
  * @ORM\Entity
+ * @Gedmo\Loggable
  */
 class Registry
 {
@@ -33,6 +34,7 @@ class Registry
      * @var Integer
      * 
      * @ORM\Column(name="number", type="integer", nullable=true)
+     * @Gedmo\Versioned
      */
     private $number = 0;
 
@@ -40,6 +42,7 @@ class Registry
      * @var string
      *
      * @ORM\Column(name="description", type="text", precision=0, scale=0, nullable=true, unique=false)
+     * @Gedmo\Versioned
      */
     private $description;
 
@@ -56,6 +59,7 @@ class Registry
      *
      * @ORM\Column(name="modified_date", type="datetime", precision=0, scale=0, nullable=true, unique=false)
      * @Gedmo\Timestampable(on="update")
+     * @Gedmo\Versioned
      */
     private $modifiedDate;
 
@@ -63,6 +67,7 @@ class Registry
      * @var integer
      *
      * @ORM\Column(name="status", type="integer", length=1, precision=0, scale=0, nullable=true, unique=false)
+     * @Gedmo\Versioned
      */
     private $status = 0;
 
@@ -100,8 +105,16 @@ class Registry
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="modified_by", referencedColumnName="id", nullable=true)
      * })
+     * @Gedmo\Versioned
      */
     private $modifiedBy;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="Registry\Entity\File", mappedBy="registry", cascade={"ALL"})
+     */
+    private $files;
 
     /**
      * Constructor
@@ -368,14 +381,7 @@ class Registry
     {
         return $this->modifiedBy;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\OneToMany(targetEntity="Registry\Entity\File", mappedBy="registry")
-     */
-    private $files;
-
-
+    
     /**
      * Add files
      *

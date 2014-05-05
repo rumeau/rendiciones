@@ -61,6 +61,8 @@ class IndexController extends AbstractActionController
         }
         
         $registries = new ZendPaginator(new DoctrinePaginatorAdapter(new DoctrinePaginator($q, false)));
+        $registries->setCurrentPageNumber($this->params()->fromQuery('p', 1))
+            ->setItemCountPerPage(20);
         
         return array(
         	'registries' => $registries,
@@ -78,7 +80,7 @@ class IndexController extends AbstractActionController
     	$id = $this->params()->fromQuery('id', 0);
     	$registry = $this->objectManager->find('Registry\Entity\Registry', $id);
     	if (!is_object($registry) || !$this->registry($registry)->canView()) {
-    		$this->fm(_('La rendicion solicitada no pudo ser encontrada'));
+    		$this->fm(_('La rendicion solicitada no pudo ser encontrada'), 'error');
     		return $this->redirect()->toRoute('registry', array('action' => 'index'));
     	}
     	
@@ -273,7 +275,7 @@ class IndexController extends AbstractActionController
     {
     	$id = $this->params()->fromQuery('id', 0);
     	$registry = $this->objectManager->find('Registry\Entity\Registry', (int) $id);
-    	if ($registry->getUser() !== $this->zfcUserAuthentication()->getIdentity() || !is_object($registry)) {
+    	if (!is_object($registry) || $registry->getUser() !== $this->zfcUserAuthentication()->getIdentity()) {
     		$this->fm(_('La rendicion seleccionada no ha sido encontrada'), 'error');
     		return $this->redirect()->toRoute('registry', array('action' => 'index'));
     	}
@@ -290,20 +292,17 @@ class IndexController extends AbstractActionController
     	if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
     		return $prg;
     	} elseif (is_array($prg)) {
-    		if (!count($prg['registry']['items'])) {
+    		if (!isset($prg['registry']['items']) || !count($prg['registry']['items'])) {
 	    		$error = _('Debe agregar al menos un item a su rendicion');
     		} else {
-		    	// PROCESAR FORMULARIO
+    		    // PROCESAR FORMULARIO
 		    	if ($form->isValid()) {
 		    		// Obtener la rendicion creada con FORM
-		    		$registry = $form->getObject();
-			    	
-			    	$this->uploadFiles($form, $registry);
+		    		$this->uploadFiles($form, $registry);
 		    		$confirm = $this->doSave($registry, $prg);
 			    	if ($confirm === true) {
 			    		return $this->redirect()->toRoute('registry/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));
 			    	}
-			    	
 			    	$this->fm(_('Rendicion guardada'));
 			    	return $this->redirect()->toRoute('registry', array('action' => 'index'));
 		    	} else {
@@ -377,14 +376,17 @@ class IndexController extends AbstractActionController
     	$uploadable = $this->getServiceLocator()->get('Gedmo\Uploadable');
     	$items = $form->get('registry')->get('items');
     	foreach ($items->getIterator() as $item) {
-    		foreach ($item->get('thefiles')->getValue() as $fileInfo) {
-    			$file = new File();
-    			$file->setItem($item->getObject());
-    			$file->setRegistry($registry);
-    			
-    			$uploadable->addEntityFileInfo($file, new FileInfo($fileInfo));
-    			$this->objectManager->persist($file);
-    		}
+    	    $theFiles = $item->get('thefiles')->getValue();
+    	    if (is_array($theFiles) && count($theFiles) > 0) {
+        		foreach ($theFiles as $fileInfo) {
+        			$file = new File();
+        			$file->setItem($item->getObject());
+        			$file->setRegistry($registry);
+        			
+        			$uploadable->addEntityFileInfo($file, new FileInfo($fileInfo));
+        			$this->objectManager->persist($file);
+        		}
+    	    }
     	}
     }
     
@@ -412,11 +414,8 @@ class IndexController extends AbstractActionController
     	$registry->setStatus(Registry::REGISTRY_STATUS_DRAFT);
     	    	
     	// Disparar eventos
-    	if (!$confirm) {
-    		$this->getEventManager()->trigger('create.registry', $this, array('registry' => $registry));
-    	} else {
-    		$this->getEventManager()->trigger('confirm.registry', $this, array('registry' => $registry));
-    	}
+    	$event = $confirm ? 'confirm' : 'create';
+    	$this->getEventManager()->trigger($event . '.registry', $this, array('registry' => $registry));
     	
     	$toConfirm = null;
     	if ($status == 'save') {

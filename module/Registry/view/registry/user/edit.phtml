@@ -1,0 +1,114 @@
+<?php $this->headtitle('Editar Usuario');?>
+
+<?php $this->headscript()->appendFile($this->basepath('js/users.js'));?>
+<?php $this->headlink()->appendStylesheet($this->basepath('css/users.css'));?>
+
+<?php $this->headscript()->appendFile('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/js/jasny-bootstrap.min.js');?>
+<?php $this->headlink()->appendStylesheet('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/css/jasny-bootstrap.min.css');?>
+
+<div class="page-header">
+	<h1><?=$this->translate('Editar Usuario');?></h1>
+</div>
+
+<?php
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('class', 'form-horizontal');
+?>
+
+<?=$this->form(null, 'horizontal')->openTag($form);?>
+
+	<?php if ($this->error) : ?>
+	<?=$this->alert($this->error, array('class' => 'alert alert-danger'), true);?>
+	<?php endif; ?>
+	
+	<?php $user = $form->get('user'); ?>
+	<?=$this->formrow($user->get('name'));?>
+	
+	<fieldset>
+		<legend><?=$this->translate('Informacion de Sesion');?></legend>
+		
+		<div class="form-group">
+			<label class="control-label col-lg-2"><?=$this->translate('Estado');?></label>
+			<div class="col-lg-10 switchcontrol">
+				<?=$this->formcheckbox($user->get('status'));?>
+			</div>
+		</div>
+		<?=$this->formrow($user->get('email'));?>
+		
+		<div class="form-group">
+			<?=$this->formlabel($user->get('identity')->setLabelAttributes(array('class' => 'col-lg-2 control-label')));?>
+			<div class="col-lg-10">
+				<?php
+				$identifier = $user->get('identity')->getValue();
+				$rut = substr($identifier, 0, -1);
+				$rut = number_format($rut, 0, ',', '.');
+				$dv = substr($identifier, -1);
+				?>
+				<p class="form-control-static"><?=sprintf('%s-%s', $rut, $dv);?></p>
+			</div>
+		</div>
+		
+		<?=$this->formrow($user->get('password_o'));?>
+		<?=$this->formrow($user->get('password'));?>
+		<?=$this->formrow($user->get('password_c'));?>
+		
+		<?=$this->formrow($user->get('userGroup'));?>
+	</fieldset>
+	
+	<fieldset>
+		<legend><?=$this->translate('Informacion');?></legend>
+		
+		<?=$this->formrow($user->get('workPhone'));?>
+		<?=$this->formrow($user->get('homePhone'));?>
+		<?=$this->formrow($user->get('mobilePhone'));?>
+		<?=$this->formrow($user->get('address'));?>
+	</fieldset>
+	
+	<fieldset>
+		<legend><?=$this->translate('Permisos');?></legend>
+		
+		<div class="form-group">
+			<label class="col-lg-2 control-label"><?=$this->translate('Permisos de usuario');?></label>
+			<div class="col-lg-10">
+				<?=$this->formmulticheckbox($user->get('userRoles'));?>
+			</div>
+		</div>
+		
+		<div class="moderatoronly">
+            <?=$this->formrow($user->get('moderatedGroups'));?>
+        </div>
+	</fieldset>
+	
+	<div class="form-group">
+		<div class="col-lg-10 col-offset-lg-2">
+			<?=$this->formhidden($form->get('formcsrf'));?>
+			<a href="<?=$this->url('users');?>" class="btn btn-labeled btn-default"><span class="btn-label"><i class="glyphicon glyphicon-arrow-left"></i></span><?=$this->translate('Cancelar');?></a>
+			<button type="submit" name="task" class="btn btn-labeled btn-info"><span class="btn-label"><i class="glyphicon glyphicon-floppy-disk"></i></span><?=$this->translate('Guardar Usuario');?></button>
+		</div>
+	</div>
+	
+	<?php $this->inlinescript()->captureStart();?>
+	$('input.switch-status').bootstrapSwitch({
+		onText: '<?=$this->translate('Activo');?>',
+		offText: '<?=$this->translate('Inactivo');?>'
+	});
+	$('.selectpicker').selectpicker();
+	var moderatorCheckbox = $('input[name="user[userRoles][]"][value="3"]');
+	if (!moderatorCheckbox.is(':checked')) {
+        $('.selectpicker').selectpicker('deselectAll');
+        $('.moderatoronly').css('position', 'absolute').css('visibility', 'hidden');
+	}
+	moderatorCheckbox.change(function() {
+	   var $this = $(this);
+	   if ($this.is(':checked')) {
+	       $('.selectpicker').selectpicker('deselectAll');
+	       $('.moderatoronly').css('position', 'inherit').css('visibility', 'inherit');
+	   } else {
+	       $('.selectpicker').selectpicker('deselectAll');
+	       $('.moderatoronly').css('position', 'absolute').css('visibility', 'hidden');
+	   }
+	});
+	<?php $this->inlinescript()->captureEnd();?>
+	
+<?=$this->form()->closeTag();?>

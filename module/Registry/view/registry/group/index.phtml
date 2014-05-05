@@ -1,0 +1,55 @@
+<?php $this->headtitle('Grupos');?>
+
+<div class="page-header">
+	<h1><?=$this->translate('Grupos');?></h1>
+</div>
+
+<div class="btn-toolbar pull-right">	
+    <div class="btn-group">
+        <a href="<?=$this->url('groups/default', array('action' => 'create'));?>" title="<?=$this->translate('Crear Grupo');?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <?=$this->translate('Crear Grupo');?></a>
+        <a href="<?=$this->url('users/default', array('action' => 'create'));?>" title="<?=$this->translate('Crear Usuario');?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> <?=$this->translate('Crear Usuario');?></a>
+    </div>
+</div>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th><?=$this->sortlink('name', 'Nombre', true);?></th>
+			<th class="col-lg-1"><?=$this->sortlink('users', 'Usuarios');?></th>
+			<th class="col-lg-1"></th>
+		</tr>
+	</thead>
+	
+	<tbody>
+		<?php if ($this->groups->count()) : ?>
+        <?php
+        foreach ($this->groups as $group) :
+            $users = $group['users'];
+            $group = $group[0];
+        ?>
+		<tr>
+			<td><?=$this->escapehtml($group->getName());?></td>
+			<td><?=$users;?></td>
+			<td>
+				<a href="<?=$this->url('groups/default', array('action' => 'edit'), array('query' => array('id' => $group->getId())));?>" title="<?=$this->translate('Editar');?>"><?=$this->glyphicon('edit');?></a>
+				<a href="<?=$this->url('groups/default', array('action' => 'delete'), array('query' => array('id' => $group->getId())));?>" title="<?=$this->translate('Eliminar');?>"><?=$this->glyphicon('trash');?></a>
+			</td>
+		</tr>
+		<?php endforeach; ?>
+		<?php else : ?>
+		<tr>
+			<td colspan="3">
+				<p class="lead text-center text-muted"><?=$this->translate('No se han encontrado grupos');?></p>
+			</td>
+		</tr>
+		<?php endif; ?>
+	</tbody>
+	
+	<tfoot>
+		<tr>
+			<td colspan="3" class="text-center">
+				<?=$this->paginationcontrol($this->groups, null, null, array('route' => 'groups'));?>
+			</td>
+		</tr>
+	</tfoot>
+</table>

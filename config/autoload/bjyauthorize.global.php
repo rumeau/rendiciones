@@ -28,12 +28,16 @@ return array(
             	
             	array('route' => 'users', 'roles' => array('administrator')),
             	array('route' => 'users/default', 'roles' => array('administrator')),
+                
+                array('route' => 'groups', 'roles' => array('administrator')),
+                array('route' => 'groups/default', 'roles' => array('administrator')),
             ),
             'BjyAuthorize\Guard\Controller' => array(
                 array('controller' => 'zfcuser', 'action' => array('index', 'login', 'logout', 'register'), 'roles' => array('user', 'guest')),
                 array('controller' => 'Registry\Controller\Index',  'action' => array('index', 'view', 'comment', 'create', 'edit', 'delete'), 'roles' => array('user')),
             	array('controller' => 'Registry\Controller\Review', 'action' => array('index', 'view', 'comment'), 'roles' => array('moderator', 'administrator')),
             	array('controller' => 'Registry\Controller\User',   'action' => array('index', 'create', 'edit', 'delete'), 'roles' => array('administrator')),
+                array('controller' => 'Registry\Controller\Group',   'action' => array('index', 'create', 'edit', 'delete'), 'roles' => array('administrator')),
             ),
         ),
         

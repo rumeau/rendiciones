@@ -1,0 +1,50 @@
+<?php $this->headtitle('Editar Grupo');?>
+
+<?php $this->headscript()->appendFile($this->basepath('/js/groups.js')); ?>
+<?php $this->headlink()->appendStylesheet($this->basepath('css/groups.css')); ?>
+
+<?php $this->headscript()->appendFile('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/js/jasny-bootstrap.min.js');?>
+<?php $this->headlink()->appendStylesheet('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/css/jasny-bootstrap.min.css');?>
+
+<div class="page-header">
+	<h1><?=$this->translate('Editar Grupo');?></h1>
+</div>
+
+<?php
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', $this->url('groups/default', array('action' => 'edit'), array('query' => array('id' => $this->group->getId()))));
+$form->setAttribute('class', 'form-horizontal');
+$form->setAttribute('autocomplete', 'off');
+?>
+
+<?=$this->form(null, 'horizontal')->openTag($form);?>
+
+	<?php if ($this->error) : ?>
+	<?=$this->alert($this->error, array('class' => 'alert alert-danger'), true);?>
+	<?php endif; ?>
+	
+	<?php $group = $form->get('group'); ?>
+	<?=$this->formrow($group->get('name'));?>
+	<?=$this->formrow($group->get('description'));?>
+	
+	<fieldset>
+		<legend><?=$this->translate('Usuarios');?></legend>
+		
+		<?=$this->formrow($group->get('users'));?>
+		<p class="help-block col-lg-offset-2">* <?=$this->translate('El usuario ya pertenece a un grupo');?></p>
+	</fieldset>
+	
+	<div class="form-group">
+		<div class="col-lg-10 col-offset-lg-2">
+			<?=$this->formhidden($form->get('formcsrf'));?>
+			<a href="<?=$this->url('groups');?>" class="btn btn-labeled btn-default"><span class="btn-label"><i class="glyphicon glyphicon-arrow-left"></i></span><?=$this->translate('Cancelar');?></a>
+			<button type="submit" name="task" class="btn btn-labeled btn-info"><span class="btn-label"><i class="glyphicon glyphicon-floppy-disk"></i></span><?=$this->translate('Guardar Grupo');?></button>
+		</div>
+	</div>
+	
+	<?php $this->inlinescript()->captureStart();?>
+	 $('.selectpicker').selectpicker();
+	<?php $this->inlinescript()->captureEnd();?>
+	
+<?=$this->form()->closeTag();?>

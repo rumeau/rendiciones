@@ -1,0 +1,228 @@
+PHPUnit 3.7.27 by Sebastian Bergmann.
+
+The Xdebug extension is not loaded. No code coverage will be generated.
+
+
+.......string(23886) "<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Ingresar Rendicion - ZF2 Skeleton Application</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <base href="/" />
+        
+        <!-- Le styles -->
+        <link href="/css/app.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/css/create-registry.css" media="screen" rel="stylesheet" type="text/css">
+<link href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/css/jasny-bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+<link href="/css/style.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/docs/font-awesome.css" media="screen" rel="stylesheet" type="text/css">
+        <!-- Scripts -->
+        <script type="text/javascript" src="/js/app.js"></script>
+<!--[if lt IE 9]><script type="text/javascript" src="/js/html5.js"></script><![endif]-->
+<script type="text/javascript" src="/js/create-registry.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/js/jasny-bootstrap.min.js"></script>
+    </head>
+    <body>
+                <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="">Sistema de Rendiciones</a>
+                </div>
+                
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                        <ul class="nav navbar-nav">
+                        <!-- SOLO SI HAY RENDICIONES NUEVAS POR REVISAR Y ES CONTROLADOR -->
+                                                <li><a href="/review"><span class="glyphicon glyphicon-check"></span>&nbsp;Controlar                        	</a></li>
+                                                
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-list"></span>&nbsp;Rendiciones <b class="caret"></b></a>
+                            <ul class="dropdown-menu" data-role="dropdown">
+                            	<li><a href="/registry">Mis Rendiciones</a></li>
+                                <li><a href="/registry/create">Rendir</a></li>
+                            </ul>
+                        </li>
+                        
+                                                <li><a href="/users"><span class="glyphicon glyphicon-user"></span>&nbsp;Usuarios</a></li>
+                        <li><a href="/groups"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Grupos</a></li>
+                                            </ul>
+                    
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="" class="navbar-avatar">
+                                <img class="img-circle" src="http://www.gravatar.com/avatar/79110ce0b43256e3fc1a59d1bb4bab03?s=35&amp;d=mm&amp;r=g">                                Jean Rumeau                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="/user/logout" title="Cerrar Sesion"><span class="glyphicon glyphicon-log-out"></span></a>
+                    </ul>
+                                    </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div id="bd" class="container">
+        	        	
+            
+
+<div class="page-header">
+	<h1>Ingresar Rendicion</h1>
+</div>
+
+
+<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+		
+		<div class="form-group "><label class="col-lg-2 control-label">Descripcion</label><div class=" col-lg-4"><textarea name="registry[description]" placeholder="Descripcion" cols="5" class="form-control">TEST</textarea></div></div>
+	
+	<div class="btn-toolbar">
+		<button type="button" class="btn btn-primary" data-aggregator="item" data-type="1" data-type-title="Boleta"><span class="glyphicon glyphicon-plus"></span> Agregar Boleta</button>
+		<button type="button" class="btn btn-primary" data-aggregator="item" data-type="2" data-type-title="Factura"><span class="glyphicon glyphicon-plus"></span> Agregar Factura</button>
+	</div>
+	<hr />
+	<div id="template"><span data-template="&lt;fieldset&gt;&lt;input&#x20;type&#x3D;&quot;hidden&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;document&#x5D;&quot;&#x20;class&#x3D;&quot;documentType&#x20;form-control&quot;&#x20;value&#x3D;&quot;1&quot;&gt;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Descripcion&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-3&quot;&gt;&lt;textarea&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;description&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Descripcion&quot;&#x20;class&#x3D;&quot;form-control&quot;&gt;&lt;&#x2F;textarea&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Numero&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;N&amp;deg&#x3B;&lt;&#x2F;span&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemNumber&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Numero&quot;&#x20;class&#x3D;&quot;numberField&#x20;form-control&quot;&#x20;value&#x3D;&quot;&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;RUT&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemIdentifier&#x5D;&quot;&#x20;placeholder&#x3D;&quot;RUT&quot;&#x20;data-formatter&#x3D;&quot;99.999.999-&#x2A;&quot;&#x20;class&#x3D;&quot;form-control&quot;&#x20;value&#x3D;&quot;&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Nombre&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-3&quot;&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemName&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Nombre&quot;&#x20;class&#x3D;&quot;form-control&quot;&#x20;value&#x3D;&quot;&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Fecha&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;input&#x20;type&#x3D;&quot;date&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemDate&#x5D;&quot;&#x20;class&#x3D;&quot;form-control&quot;&#x20;value&#x3D;&quot;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;&lt;span&#x20;class&#x3D;&quot;glyphicon&#x20;glyphicon-calendar&quot;&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Total&#x20;Neto&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;&#x24;&lt;&#x2F;span&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemGross&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Total&#x20;Neto&quot;&#x20;class&#x3D;&quot;totalGross&#x20;form-control&quot;&#x20;value&#x3D;&quot;0&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;IVA&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;&#x24;&lt;&#x2F;span&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemVat&#x5D;&quot;&#x20;placeholder&#x3D;&quot;IVA&quot;&#x20;class&#x3D;&quot;totalVat&#x20;form-control&quot;&#x20;value&#x3D;&quot;0&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Total&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;&#x24;&lt;&#x2F;span&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemTotal&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Total&quot;&#x20;class&#x3D;&quot;form-control&quot;&#x20;value&#x3D;&quot;0&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Imagenes&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-4&quot;&gt;&lt;input&#x20;type&#x3D;&quot;file&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;thefiles&#x5D;&#x5B;&#x5D;&quot;&#x20;multiple&#x3D;&quot;multiple&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;&#x2F;fieldset&gt;"></span></div>
+	
+	<div class="panel-group" id="accordion">
+		<span data-template="&lt;fieldset&gt;&lt;input&#x20;type&#x3D;&quot;hidden&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;document&#x5D;&quot;&#x20;class&#x3D;&quot;documentType&#x20;form-control&quot;&#x20;value&#x3D;&quot;1&quot;&gt;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Descripcion&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-3&quot;&gt;&lt;textarea&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;description&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Descripcion&quot;&#x20;class&#x3D;&quot;form-control&quot;&gt;&lt;&#x2F;textarea&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Numero&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;N&amp;deg&#x3B;&lt;&#x2F;span&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemNumber&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Numero&quot;&#x20;class&#x3D;&quot;numberField&#x20;form-control&quot;&#x20;value&#x3D;&quot;&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;RUT&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemIdentifier&#x5D;&quot;&#x20;placeholder&#x3D;&quot;RUT&quot;&#x20;data-formatter&#x3D;&quot;99.999.999-&#x2A;&quot;&#x20;class&#x3D;&quot;form-control&quot;&#x20;value&#x3D;&quot;&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Nombre&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-3&quot;&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemName&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Nombre&quot;&#x20;class&#x3D;&quot;form-control&quot;&#x20;value&#x3D;&quot;&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Fecha&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;input&#x20;type&#x3D;&quot;date&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemDate&#x5D;&quot;&#x20;class&#x3D;&quot;form-control&quot;&#x20;value&#x3D;&quot;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;&lt;span&#x20;class&#x3D;&quot;glyphicon&#x20;glyphicon-calendar&quot;&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Total&#x20;Neto&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;&#x24;&lt;&#x2F;span&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemGross&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Total&#x20;Neto&quot;&#x20;class&#x3D;&quot;totalGross&#x20;form-control&quot;&#x20;value&#x3D;&quot;0&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;IVA&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;&#x24;&lt;&#x2F;span&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemVat&#x5D;&quot;&#x20;placeholder&#x3D;&quot;IVA&quot;&#x20;class&#x3D;&quot;totalVat&#x20;form-control&quot;&#x20;value&#x3D;&quot;0&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Total&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-2&quot;&gt;&lt;div&#x20;class&#x3D;&quot;input-group&#x20;&quot;&gt;&lt;span&#x20;class&#x3D;&quot;input-group-addon&quot;&gt;&#x24;&lt;&#x2F;span&gt;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;itemTotal&#x5D;&quot;&#x20;placeholder&#x3D;&quot;Total&quot;&#x20;class&#x3D;&quot;form-control&quot;&#x20;value&#x3D;&quot;0&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;div&#x20;class&#x3D;&quot;form-group&#x20;&quot;&gt;&lt;label&#x20;class&#x3D;&quot;col-lg-2&#x20;control-label&quot;&gt;Imagenes&lt;&#x2F;label&gt;&lt;div&#x20;class&#x3D;&quot;&#x20;col-lg-4&quot;&gt;&lt;input&#x20;type&#x3D;&quot;file&quot;&#x20;name&#x3D;&quot;registry&#x5B;items&#x5D;&#x5B;__index__&#x5D;&#x5B;thefiles&#x5D;&#x5B;&#x5D;&quot;&#x20;multiple&#x3D;&quot;multiple&quot;&gt;&lt;&#x2F;div&gt;&lt;&#x2F;div&gt;&#x0D;&#x0A;&lt;&#x2F;fieldset&gt;"></span>				<div class="panel panel-default " id="panel0">
+			<div class="panel-heading"  data-parent="#accordion" data-toggle="collapse" data-target="#collapse0">
+				<h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse0">Boleta<span class="numberField"></span></a>
+					<span class="clear-panel pull-right"></span>
+				</h4>
+			</div>
+			<div id="collapse0" class="panel-collapse collapse">
+				<div class="panel-body">
+					<fieldset><input type="hidden" name="registry[items][0][document]" class="documentType form-control" value="1"><div class="form-group "><label class="col-lg-2 control-label">Descripcion</label><div class=" col-lg-3"><textarea name="registry[items][0][description]" placeholder="Descripcion" class="form-control"></textarea></div></div>
+<div class="form-group "><label class="col-lg-2 control-label">Numero</label><div class=" col-lg-2"><div class="input-group "><span class="input-group-addon">N&deg;</span><input type="text" name="registry[items][0][itemNumber]" placeholder="Numero" class="numberField form-control" value="999999999"></div></div></div>
+<div class="form-group "><label class="col-lg-2 control-label">RUT</label><div class=" col-lg-2"><input type="text" name="registry[items][0][itemIdentifier]" placeholder="RUT" data-formatter="99.999.999-*" class="form-control" value="999999999"></div></div>
+<div class="form-group "><label class="col-lg-2 control-label">Nombre</label><div class=" col-lg-3"><input type="text" name="registry[items][0][itemName]" placeholder="Nombre" class="form-control" value="TEST"></div></div>
+<div class="form-group "><label class="col-lg-2 control-label">Fecha</label><div class=" col-lg-2"><div class="input-group "><input type="date" name="registry[items][0][itemDate]" class="form-control" value="2014-01-01"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></div></div>
+<div class="form-group "><label class="col-lg-2 control-label">Total Neto</label><div class=" col-lg-2"><div class="input-group "><span class="input-group-addon">$</span><input type="text" name="registry[items][0][itemGross]" placeholder="Total Neto" class="totalGross form-control" value="999"></div></div></div>
+<div class="form-group "><label class="col-lg-2 control-label">IVA</label><div class=" col-lg-2"><div class="input-group "><span class="input-group-addon">$</span><input type="text" name="registry[items][0][itemVat]" placeholder="IVA" class="totalVat form-control" value="0"></div></div></div>
+<div class="form-group "><label class="col-lg-2 control-label">Total</label><div class=" col-lg-2"><div class="input-group "><span class="input-group-addon">$</span><input type="text" name="registry[items][0][itemTotal]" placeholder="Total" class="form-control" value="999"></div></div></div>
+<div class="form-group "><label class="col-lg-2 control-label">Imagenes</label><div class=" col-lg-4"><input type="file" name="registry[items][0][thefiles][]" multiple="multiple"></div></div>
+</fieldset>				</div>
+			</div>
+		</div>
+			</div>
+	
+	<div class="form-group">
+		<div class="col-lg-10 col-offset-lg-2">
+			<input type="hidden" name="formcsrf" class="form-control" value="135956ebd23104ff0ba2ee917f2cd0e2-ec82f3f0e631df73de4904146176a107">			<a href="/registry" class="btn btn-labeled btn-default"><span class="btn-label"><i class="glyphicon glyphicon-arrow-left"></i></span>Cancelar</a>
+			<button type="submit" name="task" value="draft" class="btn btn-labeled btn-info"><span class="btn-label"><i class="glyphicon glyphicon-floppy-disk"></i></span>Guardar Borrador</button>
+			<button type="submit" name="task" value="save" class="btn btn-labeled btn-primary"><span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span>Publicar Rendicion</button>
+		</div>
+	</div>
+	
+		
+</form>            <hr>
+            <footer>
+                <p>&copy; 2005 - 2014 by Zend Technologies Ltd. All rights reserved.</p>
+            </footer>
+        </div> <!-- /container -->
+        <script type="text/javascript">
+    //<!--
+    	if (!Modernizr.inputtypes.date) {
+		$('input[type="date"]').datepicker({
+			format: "yyyy-mm-dd",
+			autoclose: true
+		});
+	}
+	
+	$('input[type="file"]').fancyFileInput();
+	$('.ffi').addClass('theme-bootstrap').addClass('custom-image-button');
+	var bills = $('input.documentType[value="1"]');
+	bills.each(function(i, item) {
+		var panel = $(item).closest('.panel');
+		panel.find('input.totalGross').closest('.form-group').hide(); // Hide Gross
+		panel.find('input.totalVat').closest('.form-group').hide(); // Hide VAT
+	});
+	
+	
+	$(document).on('click', '.clear-panel', function() {
+		$(this).closest('.panel').remove();
+	});
+	
+	$('button[data-aggregator="item"]').click(function() {
+		var panels = $('form > #accordion > .panel');
+		var currentCount = panels.length;
+		var template = $('#template > span').data('template');
+		template = template.replace(/__index__/g, currentCount);
+		
+		var panel = $('<div class="panel panel-default" id="panel' + currentCount + '" />');
+		var panelHeading = $('<div class="panel-heading" data-parent="#accordion" data-toggle="collapse" data-target="#collapse' + currentCount + '">'
+			+ '	<h4 class="panel-title">'
+			+ '		<a data-toggle="collapse" data-parent="#accordion" href="#collapse' + currentCount + '">' + $(this).data('type-title') + '<span class="numberField"></span></a>'
+			+ '		<span class="clear-panel pull-right"></span>'
+			+ '	</h4>'
+			+ '</div>');
+		var panelContent = $('<div id="collapse' + currentCount + '" class="panel-collapse collapse"><div class="panel-body">' + template + '</div>');
+		
+		panel.append(panelHeading, panelContent);
+		
+		$('form > #accordion').append(panel);
+		if (!Modernizr.inputtypes.date) {
+			panel.find('input[type="date"]').datepicker({
+				format: "yyyy-mm-dd",
+				autoclose: true
+			});
+		}
+		
+		panel.find('input.documentType').val($(this).data('type'));
+		
+		if ($(this).data('type') == 1) {
+			panel.find('input.totalGross').closest('.form-group').hide(); // Hide Gross
+			panel.find('input.totalVat').closest('.form-group').hide(); // Hide VAT
+		}
+		
+		panel.find('input[type="file"]').fancyFileInput();
+		panel.find('.ffi').addClass('theme-bootstrap').addClass('custom-image-button');
+        			
+		return false;
+	});
+	
+	$(function() {
+		if (!Modernizr.inputtypes.date) {
+			$(document).on('click', 'input[type="date"], input[type="date"] + span.input-group-addon > span.glyphicon-calendar', function() {
+				if ($(this).prop('tagName') == 'SPAN') {
+					$this = $(this).parent('span').prev('input');
+				} else {
+					$this = $(this);
+				}
+				$this.datepicker('show');
+			});
+		} else {
+			$(document).on('click', 'input[type="date"], input[type="date"] + span.input-group-addon > span.glyphicon-calendar', function() {
+				$this = $(this).parent('span').prev('input');
+				$this.focus();
+			});
+		}
+		
+		$(document).on('keyup', 'input.numberField', function() {
+			var spanField = $(this).parents('.panel').find('.panel-heading span.numberField').eq(0);
+			if ($(this).val() !== '' && spanField) {
+				spanField.html(': #' + $(this).val());
+		    } else {
+		    	if (spanField) {
+		    		spanField.empty();
+		    	}
+		    }
+		});
+	});
+	
+    //-->
+</script>    </body>
+</html>
+"
+[36;1mS[0m[36;1mS[0m[36;1mS[0m[36;1mS[0m[36;1mS[0m..
+
+Time: 2.13 seconds, Memory: 25.00Mb
+
+[30;43m[2KOK, but incomplete or skipped tests!
+[0m[30;43m[2KTests: 14, Assertions: 58, Skipped: 5.
+[0m[2K

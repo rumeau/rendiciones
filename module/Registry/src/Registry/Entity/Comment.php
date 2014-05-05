@@ -48,7 +48,7 @@ class Comment
     /**
      * @var integer
      *
-     * @ORM\Column(name="status", type="integer", length=1, precision=0, scale=0, nullable=true, unique=false)
+     * @ORM\Column(name="`status`", type="integer", length=1, precision=0, scale=0, nullable=true, unique=false)
      */
     private $status = 1;
 
