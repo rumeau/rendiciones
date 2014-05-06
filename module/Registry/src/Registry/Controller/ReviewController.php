@@ -213,11 +213,11 @@ class ReviewController extends AbstractActionController
 			} elseif (is_array($prg)) {
 				// Validar formulario de eliminacion
 				$form->setData($prg);
-				if (!$form->isValid()) {
+				if (!$form->isValid() || $form->get('comment')->getValue() == '') {
 					$this->fm(_('El comentario no pudo ser publicado'), 'error');
 					$helper = $this->getServiceLocator()->get('viewhelpermanager')->get('htmlList');
 					$this->fm($helper($form->getMessages()), 'error');
-					return $this->redirect()->toRoute('review');
+					return $this->redirect()->toRoute('review/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));
 				}
 	
 				$comment = $form->getObject();

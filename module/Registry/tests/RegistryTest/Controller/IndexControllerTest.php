@@ -10,6 +10,8 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
     protected $traceError = true;
     
     public static $dummyRegistry;
+
+    public static $dummyRegistryPendingId = 7;
     
     public function setUp()
     {
@@ -541,7 +543,93 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
     }
     
     
-    
+    public function testCommentActionGet()
+    {
+        $this->dispatch('/registry/comment?id=' . self::$dummyRegistryPendingId);
+
+        $this->assertResponseStatusCode(302);
+    }
+
+    public function testCommentActionPRG()
+    {
+        $this->dispatch('/registry/comment?id=' . self::$dummyRegistryPendingId, 'POST', array());
+
+        $this->assertResponseStatusCode(303);
+    }
+
+    public function testCommentActionInvalidForm()
+    {
+        $post = new Container('prg_post1');
+        $post->post = array('comment' => '');
+        
+        $this->dispatch('/registry/comment?id=' . self::$dummyRegistryPendingId);
+        $this->assertRedirectTo('/registry/view?id=' . self::$dummyRegistryPendingId);
+    }
+
+    public function testCommentActionValidForm()
+    {
+        $post = new Container('prg_post1');
+        $post->post = array('comment' => 'TESTCOMMENT');
+        
+        $this->dispatch('/registry/comment?id=' . self::$dummyRegistryPendingId);
+
+        $serviceManager = $this->getApplicationServiceLocator();
+        $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $comment = $objectManager->getRepository('Registry\Entity\Comment')->findOneBy(array('comment' => 'TESTCOMMENT'));
+
+        $this->assertInstanceOf('Registry\Entity\Comment', $comment);
+        $this->assertEquals('TESTCOMMENT', $comment->getComment());
+        $this->assertRedirectTo('/registry/view?id=' . self::$dummyRegistryPendingId . '#comment-' . $comment->getId());
+    }
+
+    public function testCommentAjaxActionAccessGet()
+    {
+        $headers = $this->getRequest()->getHeaders()->addHeaderLine('Accept', 'application/json');
+        $this->dispatch('/registry/comment?id=' . self::$dummyRegistryPendingId, 'GET', array(), true);
+
+        $contentType = $this->getResponse()->getHeaders()->get('Content-Type')->getMediaType();
+        $this->assertEquals($contentType, 'application/json');
+
+        $result = $this->getResponse()->getContent();
+        $result = json_decode($result);
+        $this->assertEquals($result->result, false);
+        $this->assertEquals($result->msg, 'Llamada invalida');
+    }
+
+    public function testCommentAjaxActionAccessPostInvalid()
+    {
+        $headers = $this->getRequest()->getHeaders()->addHeaderLine('Accept', 'application/json');
+        $this->dispatch('/registry/comment?id=' . self::$dummyRegistryPendingId, 'POST', array('comment' => '20000'), true);
+
+        $contentType = $this->getResponse()->getHeaders()->get('Content-Type')->getMediaType();
+        $this->assertEquals($contentType, 'application/json');
+
+        $result = $this->getResponse()->getContent();
+        $result = json_decode($result);
+        $this->assertEquals($result->result, false);
+        $this->assertEquals($result->msg, 'El comentario solicitado no pudo ser encontrado');
+    }
+
+    public function testCommentAjaxActionAccessPostValid()
+    {
+        $serviceManager = $this->getApplicationServiceLocator();
+        $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $comment = $objectManager->getRepository('Registry\Entity\Comment')->findOneBy(array('comment' => 'TESTCOMMENT'));
+        if (!is_object($comment)) {
+            $this->markTestIncomplete('No se encontrol el comentario de prueba');
+        } else {
+            $headers = $this->getRequest()->getHeaders()->addHeaderLine('Accept', 'application/json');
+            $this->dispatch('/registry/comment?id=' . self::$dummyRegistryPendingId, 'POST', array('comment' => $comment->getId()), true);
+
+            $contentType = $this->getResponse()->getHeaders()->get('Content-Type')->getMediaType();
+            $this->assertEquals($contentType, 'application/json');
+
+            $result = $this->getResponse()->getContent();
+            $result = json_decode($result);
+            $this->assertEquals($result->result, true);
+            $this->assertEquals($result->msg, 'El comentario ha sido eliminado');
+        }
+    }
     
     /**
      * Crea un mock de autenticacion con un usuario administrador

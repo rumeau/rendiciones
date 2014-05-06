@@ -18,6 +18,8 @@ class ReviewControllerTest extends AbstractHttpControllerTestCase
 
     public static $dummyRegistryPendingId = 7;
 
+    public static $dummyComment;
+
     public function setUp()
     {
     	$dir = __DIR__;
@@ -52,7 +54,7 @@ class ReviewControllerTest extends AbstractHttpControllerTestCase
 
     public function testIndexActionWithParams()
     {
-    	$this->dispatch('/review?filter=2&p=1&q=Test&sort=status&by=asc');
+    	$this->dispatch('/review?filter=2&p=1&q=Test&sort=asc&by=status');
 
     	$this->assertResponseStatusCode(200);
     	$this->assertQuery('table.table tbody tr.success');
@@ -216,6 +218,129 @@ class ReviewControllerTest extends AbstractHttpControllerTestCase
 
     	$registry = $this->getDummyRegistry($registry);
     	$this->assertEquals(\Registry\Entity\Registry::REGISTRY_STATUS_PENDING, $registry->getStatus());
+    }
+
+    public function testViewActionValidPostAndCloseRejected()
+    {
+        $toReject = 5;
+        $serviceManager = $this->getApplicationServiceLocator();
+        $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $item = $objectManager->find('Registry\Entity\Item', $toReject);
+        if (!is_object($item)) {
+            $this->markTestIncomplete('El item no pudo ser encontrado');
+        } else {
+            $item->setStatus(2);
+            $objectManager->persist($item);
+            $objectManager->flush();
+        }
+
+        $registry = $this->getDummyRegistry();
+
+        $post = new Container('prg_post1');
+        $post->post = array('csrf' => 'testhash', 'element' => self::$dummyRegistryPendingId, 'task' => 'review');
+        
+        $csrf = new \Zend\Session\Container('Zend_Validator_Csrf_salt_csrf');
+        $csrf->hash = 'testhash';
+        
+        $this->dispatch('/review/view?id=' . self::$dummyRegistryPendingId);
+        $this->assertResponseStatusCode(302);
+
+        $registry = $this->getDummyRegistry($registry);
+        $this->assertEquals(\Registry\Entity\Registry::REGISTRY_STATUS_REJECTED, $registry->getStatus());
+
+        $registry->setStatus(\Registry\Entity\Registry::REGISTRY_STATUS_PENDING);
+        $item->setStatus(1);
+        $objectManager->persist($registry);
+        $objectManager->persist($item);
+        $objectManager->flush();
+    }
+
+    public function testCommentActionGet()
+    {
+        $this->dispatch('/review/comment?id=' . self::$dummyRegistryPendingId);
+
+        $this->assertResponseStatusCode(302);
+    }
+
+    public function testCommentActionPRG()
+    {
+        $this->dispatch('/review/comment?id=' . self::$dummyRegistryPendingId, 'POST', array());
+
+        $this->assertResponseStatusCode(303);
+    }
+
+    public function testCommentActionInvalidForm()
+    {
+        $post = new Container('prg_post1');
+        $post->post = array('comment' => '');
+        
+        $this->dispatch('/review/comment?id=' . self::$dummyRegistryPendingId);
+        $this->assertRedirectTo('/review/view?id=' . self::$dummyRegistryPendingId);
+    }
+
+    public function testCommentActionValidForm()
+    {
+        $post = new Container('prg_post1');
+        $post->post = array('comment' => 'TESTCOMMENT');
+        
+        $this->dispatch('/review/comment?id=' . self::$dummyRegistryPendingId);
+
+        $serviceManager = $this->getApplicationServiceLocator();
+        $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $comment = $objectManager->getRepository('Registry\Entity\Comment')->findOneBy(array('comment' => 'TESTCOMMENT'));
+
+        $this->assertInstanceOf('Registry\Entity\Comment', $comment);
+        $this->assertEquals('TESTCOMMENT', $comment->getComment());
+        $this->assertRedirectTo('/review/view?id=' . self::$dummyRegistryPendingId . '#comment-' . $comment->getId());
+    }
+
+    public function testCommentAjaxActionAccessGet()
+    {
+        $headers = $this->getRequest()->getHeaders()->addHeaderLine('Accept', 'application/json');
+        $this->dispatch('/review/comment?id=' . self::$dummyRegistryPendingId, 'GET', array(), true);
+
+        $contentType = $this->getResponse()->getHeaders()->get('Content-Type')->getMediaType();
+        $this->assertEquals($contentType, 'application/json');
+
+        $result = $this->getResponse()->getContent();
+        $result = json_decode($result);
+        $this->assertEquals($result->result, false);
+        $this->assertEquals($result->msg, 'Llamada invalida');
+    }
+
+    public function testCommentAjaxActionAccessPostInvalid()
+    {
+        $headers = $this->getRequest()->getHeaders()->addHeaderLine('Accept', 'application/json');
+        $this->dispatch('/review/comment?id=' . self::$dummyRegistryPendingId, 'POST', array('comment' => '20000'), true);
+
+        $contentType = $this->getResponse()->getHeaders()->get('Content-Type')->getMediaType();
+        $this->assertEquals($contentType, 'application/json');
+
+        $result = $this->getResponse()->getContent();
+        $result = json_decode($result);
+        $this->assertEquals($result->result, false);
+        $this->assertEquals($result->msg, 'El comentario solicitado no pudo ser encontrado');
+    }
+
+    public function testCommentAjaxActionAccessPostValid()
+    {
+        $serviceManager = $this->getApplicationServiceLocator();
+        $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $comment = $objectManager->getRepository('Registry\Entity\Comment')->findOneBy(array('comment' => 'TESTCOMMENT'));
+        if (!is_object($comment)) {
+            $this->markTestIncomplete('No se encontrol el comentario de prueba');
+        } else {
+            $headers = $this->getRequest()->getHeaders()->addHeaderLine('Accept', 'application/json');
+            $this->dispatch('/review/comment?id=' . self::$dummyRegistryPendingId, 'POST', array('comment' => $comment->getId()), true);
+
+            $contentType = $this->getResponse()->getHeaders()->get('Content-Type')->getMediaType();
+            $this->assertEquals($contentType, 'application/json');
+
+            $result = $this->getResponse()->getContent();
+            $result = json_decode($result);
+            $this->assertEquals($result->result, true);
+            $this->assertEquals($result->msg, 'El comentario ha sido eliminado');
+        }
     }
 
     /**
