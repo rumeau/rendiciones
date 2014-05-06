@@ -13,7 +13,7 @@ return array(
 		
 	'controller_plugins' => array(
 		'factories' => array(
-			'isModerator' => 'Registry\Mvc\Controller\Plugin\Service\IsModeratorServiceFactory',
+			'user' => 'Registry\Mvc\Controller\Plugin\Service\UserServiceFactory',
 		),
         'invokables' => array(
         	'sortParams' => 'Registry\Mvc\Controller\Plugin\SortParams',
@@ -21,12 +21,15 @@ return array(
         ),
     ),
 	'controller_plugin_config' => array(
-        'is_moderator' => array(
-        	'allowed_moderators_ids' => array(
-        		'moderator',
-        		'administrator',
-        	),
-		),
+        'user' => array(
+            'allowed_moderators_ids' => array(
+                'moderator',
+                'administrator',
+            ),
+            'allowed_admins_ids' => array(
+                'administrator',
+            ),
+        ),
     ),
 	
     'router' => array(

@@ -20,7 +20,6 @@ class ReviewController extends AbstractActionController
 		),
 	);
 	
-	
 	public function indexAction()
 	{
 	    $q = $this->objectManager->createQueryBuilder();
@@ -28,15 +27,19 @@ class ReviewController extends AbstractActionController
 			->from('Registry\Entity\Registry', 'r')
 			->leftJoin('Registry\Entity\Item', 'i', 'WITH', 'i.registry = r')
 			->join('Registry\Entity\User', 'u', 'WITH', 'r.user = u')
-			->join('Registry\Entity\User', 'm', 'WITH', 'm = :USER AND u.userGroup MEMBER OF m.moderatedGroups')
 			->andWhere('r.status IN (:STATUSES)')
 			->groupBy('r')
 			->setParameter('STATUSES', array(
 				Registry::REGISTRY_STATUS_PENDING,
 				Registry::REGISTRY_STATUS_APPROVED,
 				Registry::REGISTRY_STATUS_REJECTED
-			))
-			->setParameter('USER', $this->zfcUserAuthentication()->getIdentity());
+			));
+
+		if (!$this->user()->isAdmin()) {
+			$q->join('Registry\Entity\User', 'm', 'WITH', 'm = :USER AND u.userGroup MEMBER OF m.moderatedGroups')
+				->setParameter('USER', $this->zfcUserAuthentication()->getIdentity());
+
+		}
 		
 		$search = $this->params()->fromQuery('q', '');
 		$search = preg_replace('/\.|\,|\-/', '', $search);
@@ -83,7 +86,8 @@ class ReviewController extends AbstractActionController
 	{
 		// Procesar cambio de estados
 		if ($this->getRequest()->isXmlHttpRequest()) {
-			return $this->forward()->dispatch('Registry\Controller\Review', array('action' => 'view-ajax'));
+			$forward = $this->forward()->dispatch('Registry\Controller\Review', array('action' => 'view-ajax'));
+			return $forward;
 		}
 		
 		$id = $this->params()->fromQuery('id', 0);
@@ -130,6 +134,7 @@ class ReviewController extends AbstractActionController
 	public function viewAjaxAction()
 	{
 		$viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
+		$viewModel->setTerminal(true);
 		 
 		if (!$this->getRequest()->isPost()) {
 			return $viewModel->setVariables(array(
@@ -290,7 +295,7 @@ class ReviewController extends AbstractActionController
 		});
 		if ($itemsApproved->count() === 0) {
 			$rejected = true;
-		} elseif ($itemsTotal > $itemsApproved) {
+		} elseif ($itemsTotal > $itemsApproved->count()) {
 			$approvedPartial = true;
 		}
 		

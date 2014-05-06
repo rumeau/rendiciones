@@ -32,8 +32,17 @@ class Registry extends AbstractHelper
 	 */
 	public function canModerate()
 	{
-		$isModerator = $this->getView()->plugin('user');
-		if (!$isModerator->isModerator()) {
+		$user = $this->getView()->plugin('user');
+		if ($user->isAdmin()) {
+			if ($this->getRegistry()->getStatus() >= RegistryEntity::REGISTRY_STATUS_PENDING
+				&& $this->getRegistry()->getStatus() <= RegistryEntity::REGISTRY_STATUS_REJECTED
+			) {
+				return true;
+			}
+		}
+
+		
+		if (!$user->isModerator()) {
 			return false;
 		}
 		
@@ -50,10 +59,6 @@ class Registry extends AbstractHelper
 		) {
 			return true;
 		}
-		
-		return false;
-		
-		
 		
 		return false;
 	}

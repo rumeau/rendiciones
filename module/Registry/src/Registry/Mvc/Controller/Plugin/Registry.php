@@ -27,7 +27,16 @@ class Registry extends AbstractPlugin
 	 */
 	public function canModerate()
 	{
-		$isModerator = $this->getController()->isModerator();
+		$isAdmin = $this->getController()->user()->isAdmin();
+		if ($isAdmin) {
+			if ($this->getRegistry()->getStatus() >= RegistryEntity::REGISTRY_STATUS_PENDING
+				&& $this->getRegistry()->getStatus() <= RegistryEntity::REGISTRY_STATUS_REJECTED
+			) {
+				return true;
+			}
+		}
+
+		$isModerator = $this->getController()->user()->isModerator();
 		
 		if (!$isModerator) {
 		    return false;
@@ -88,8 +97,9 @@ class Registry extends AbstractPlugin
 	 */
 	public function canView()
 	{
-		$isModerator = $this->getController()->isModerator();
-		if ($isModerator && $this->getRegistry()->getStatus() > RegistryEntity::REGISTRY_STATUS_PENDING) {
+		$isAdmin = $this->getController()->user()->isAdmin();
+		$isModerator = $this->getController()->user()->isModerator();
+		if (($isModerator || $isAdmin) && $this->getRegistry()->getStatus() > RegistryEntity::REGISTRY_STATUS_PENDING) {
 			return true;
 		} elseif ($this->getRegistry()->getUser() === $this->getIdentity()) {
 			return true;
@@ -100,7 +110,7 @@ class Registry extends AbstractPlugin
 	
 	public function canClose()
 	{
-		$isModerator = $this->getController()->isModerator();
+		$isModerator = $this->getController()->user()->isModerator();
 		if ($isModerator && $this->getRegistry()->getStatus() === RegistryEntity::REGISTRY_STATUS_PENDING) {
 			return true;
 		}
@@ -110,7 +120,7 @@ class Registry extends AbstractPlugin
 	
 	public function canReopen()
 	{
-		$isModerator = $this->getController()->isModerator();
+		$isModerator = $this->getController()->user()->isModerator();
 		if ($isModerator
 			&& $this->getRegistry()->getStatus() > RegistryEntity::REGISTRY_STATUS_PENDING
 			&& $this->getRegistry()->getStatus() <= RegistryEntity::REGISTRY_STATUS_REJECTED
