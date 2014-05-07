@@ -225,7 +225,8 @@ class ReviewControllerTest extends AbstractHttpControllerTestCase
         $toReject = 5;
         $serviceManager = $this->getApplicationServiceLocator();
         $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
-        $item = $objectManager->find('Registry\Entity\Item', $toReject);
+        $item  = $objectManager->find('Registry\Entity\Item', $toReject);
+        $item2 = $objectManager->find('Registry\Entity\Item', 2);
         if (!is_object($item)) {
             $this->markTestIncomplete('El item no pudo ser encontrado');
         } else {
@@ -250,14 +251,26 @@ class ReviewControllerTest extends AbstractHttpControllerTestCase
 
         $registry->setStatus(\Registry\Entity\Registry::REGISTRY_STATUS_PENDING);
         $item->setStatus(1);
+
         $objectManager->persist($registry);
         $objectManager->persist($item);
+        if (is_object($item2)) {
+            $item2->setStatus(1);
+            $objectManager->persist($item2);
+        }
         $objectManager->flush();
     }
 
     public function testCommentActionGet()
     {
         $this->dispatch('/review/comment?id=' . self::$dummyRegistryPendingId);
+
+        $this->assertResponseStatusCode(302);
+    }
+
+    public function testCommentActionGetInvalidRegistry()
+    {
+        $this->dispatch('/review/comment?id=20000');
 
         $this->assertResponseStatusCode(302);
     }
@@ -341,6 +354,52 @@ class ReviewControllerTest extends AbstractHttpControllerTestCase
             $this->assertEquals($result->result, true);
             $this->assertEquals($result->msg, 'El comentario ha sido eliminado');
         }
+    }
+
+    public function testViewActionReopenOnCantReopen()
+    {
+        $registry = $this->getDummyRegistry();
+        $registry->setStatus(4);
+
+        $serviceManager = $this->getApplicationServiceLocator();
+        $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $objectManager->persist($registry);
+        $objectManager->flush();
+
+        $post = new Container('prg_post1');
+        $post->post = array('csrf' => 'testhash', 'element' => self::$dummyRegistryPendingId, 'task' => 'reopen');
+        
+        $csrf = new \Zend\Session\Container('Zend_Validator_Csrf_salt_csrf');
+        $csrf->hash = 'testhash';
+        
+        $this->dispatch('/review/view?id=' . self::$dummyRegistryPendingId);
+        $this->assertResponseStatusCode(302);
+
+        $registry = $this->getDummyRegistry($registry);
+        $this->assertEquals(4, $registry->getStatus());
+    }
+
+    public function testViewActionCloseOnCantClose()
+    {
+        $post = new Container('prg_post1');
+        $post->post = array('csrf' => 'testhash', 'element' => self::$dummyRegistryPendingId, 'task' => 'close');
+        
+        $csrf = new \Zend\Session\Container('Zend_Validator_Csrf_salt_csrf');
+        $csrf->hash = 'testhash';
+        
+        $this->dispatch('/review/view?id=' . self::$dummyRegistryPendingId);
+        $this->assertResponseStatusCode(302);
+
+        $registry = $this->getDummyRegistry();
+        $this->assertEquals(4, $registry->getStatus());
+
+        $registry->setStatus(\Registry\Entity\Registry::REGISTRY_STATUS_PENDING);
+
+        $serviceManager = $this->getApplicationServiceLocator();
+        $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $registry->setStatus(1);
+        $objectManager->persist($registry);
+        $objectManager->flush();
     }
 
     /**

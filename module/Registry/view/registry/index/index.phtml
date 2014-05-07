@@ -51,13 +51,15 @@
 			0 => '',
 			1 => 'warning',
 			2 => 'success',
-			3 => 'danger'
+			3 => 'danger',
+			4 => 'info'
 		);
 		$statusLabelMap = array(
 			0 => array('class' => 'default', 'label' => $this->translate('BORRADOR'), 'content' => $this->translate('Requiere confirmacion para su ingreso')),
 			1 => array('class' => 'warning', 'label' => $this->translate('PENDIENTE'), 'content' => $this->translate('Rendicion pendiente de revision por un moderador')),
 			2 => array('class' => 'success', 'label' => $this->translate('APROBADA'), 'content' => $this->translate('La rendicion ha sido aprobada')),
 			3 => array('class' => 'danger',  'label' => $this->translate('RECHAZADA'), 'content' => $this->translate('La rendicion ha sido rechazada')),
+			4 => array('class' => 'info',    'label' => $this->translate('PAGADA'),    'content' => $this->translate('La rendicion ha sido pagada')),
 		);
 		?>
 		<?php if ($this->registries->count()) : ?>

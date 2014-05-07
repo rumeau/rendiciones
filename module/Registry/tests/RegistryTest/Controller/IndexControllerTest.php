@@ -16,7 +16,7 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
     public function setUp()
     {
         $dir = __DIR__;
-        $config = realpath($dir . '/../../../../../config/application.config.php');
+        $config = 'config/application.config.php';
         // Zend Studio
         //$config = '../../../config/application.config.php';
         $this->setApplicationConfig(
@@ -542,10 +542,16 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
     	}
     }
     
-    
     public function testCommentActionGet()
     {
         $this->dispatch('/registry/comment?id=' . self::$dummyRegistryPendingId);
+
+        $this->assertResponseStatusCode(302);
+    }
+
+    public function testCommentActionGetInvalidRegistry()
+    {
+        $this->dispatch('/registry/comment?id=20000');
 
         $this->assertResponseStatusCode(302);
     }
