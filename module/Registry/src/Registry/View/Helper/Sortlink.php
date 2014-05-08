@@ -45,10 +45,8 @@ class Sortlink extends AbstractHtmlTranslatorHelper
 			$renderCaret = false;
 			$sort = 'asc';
 		} else {
-			if (empty($curBy) || $curBy !== $by) {
-				if (!$defaultColumn) {
+			if (!$defaultColumn && (empty($curBy) || $curBy !== $by)) {
 					$renderCaret = false;
-				}
 			}
 			$sort = $sortInverseMap[$sort]; 
 		}
@@ -64,18 +62,14 @@ class Sortlink extends AbstractHtmlTranslatorHelper
 				unset($url['params']);
 			}
 
-			if (!isset($url[2])) {
-				$url[2] = array('query' => $newQueryParams);
-			} else {
-				$url[2] = array_merge($url[2], array('query' => $newQueryParams));
-			}
+			$url[2] = !isset($url[2])
+				? array('query' => $newQueryParams)
+				: $url[2] = array_merge($url[2], array('query' => $newQueryParams));
 			
 			$url = call_user_func_array($urlHelper, $url);
 		}
 		
-		$attributes = array_merge($attributes, array(
-			'href' => $url
-		));
+		$attributes = array_merge($attributes, array('href' => $url));
 		
 		$translator = $this->getTranslator();
 		$translatorTextDomain = $this->getTranslatorTextDomain();
