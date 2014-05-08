@@ -3,7 +3,7 @@ namespace Registry\Event;
 
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\ListenerAggregateTrait;
-use Zend\Mvc\MvcEvent;
+use Zend\EventManager\Event;
 use Zend\EventManager\EventManagerInterface;
 
 class RegistryListener implements ListenerAggregateInterface
@@ -13,8 +13,8 @@ class RegistryListener implements ListenerAggregateInterface
 	public function attach(EventManagerInterface $events)
 	{
 		$ids = array(
-			'Registry\Controller\User',
-			'Registry\Controller\Registry'
+			'Registry\Controller\UserController',
+			'Registry\Controller\RegistryController'
 		);
 		
 		$this->listeners[] = $events->getSharedManager()->attach($ids, 'create.registry', array($this, 'onCreate'), 1);
@@ -23,22 +23,22 @@ class RegistryListener implements ListenerAggregateInterface
 		$this->listeners[] = $events->getSharedManager()->attach($ids, 'reopen.registry', array($this, 'onReopen'), 1);
 	}
 	
-	public function onCreate()
+	public function onCreate(Event $e)
 	{
 		
 	}
 	
-	public function onEdit()
+	public function onEdit(Event $e)
 	{
 		
 	}
 	
-	public function onClose()
+	public function onClose(Event $e)
 	{
 		
 	}
 	
-	public function onReopen()
+	public function onReopen(Event $e)
 	{
 		
 	}

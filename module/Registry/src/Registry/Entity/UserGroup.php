@@ -59,7 +59,7 @@ class UserGroup
      *
      * @var \Doctrine\Common\Collections\Collection
      * 
-     * @ORM\OneToMany(targetEntity="Registry\Entity\User", mappedBy="userGroup")
+     * @ORM\OneToMany(targetEntity="Registry\Entity\User", mappedBy="userGroup", cascade={"ALL"})
      */
     private $users;
     
@@ -71,6 +71,8 @@ class UserGroup
      */
     private $moderators;
 
+    private $defaultGroup;
+
     /**
      * Constructor
      */
@@ -78,6 +80,22 @@ class UserGroup
     {
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->moderators = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function setDefaultGroup(UserGroup $defaultGroup)
+    {
+        $this->defaultGroup = $defaultGroup;
+
+        return $this;
+    }
+
+    public function getDefaultGroup()
+    {
+        if (!$this->defaultGroup) {
+            throw new \InvalidArgumentException('No default group have been set');
+        }
+
+        return $this->defaultGroup;
     }
 
     /**
@@ -226,7 +244,7 @@ class UserGroup
     
     public function removeUser(User $user)
     {
-        $user->removeUserGroup($this);
+        $user->setUserGroup($this->getDefaultGroup());
         $this->users->removeElement($user);
     }
     

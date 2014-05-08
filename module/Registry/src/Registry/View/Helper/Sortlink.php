@@ -60,11 +60,14 @@ class Sortlink extends AbstractHtmlTranslatorHelper
 			$url = $urlHelper(null, array(), array('query' => $newQueryParams), true);
 		} else {
 			if (isset($url['params'])) {
-				$url['params'] = array_merge($url['params'], array('query' => $newQueryParams)); 
+				$newQueryParams = array_merge($url['params'], $newQueryParams);
+				unset($url['params']);
+			}
+
+			if (!isset($url[2])) {
+				$url[2] = array('query' => $newQueryParams);
 			} else {
-				if (isset($url[2])) {
-					$url[2] = array_merge($url[2], array('query' => $newQueryParams));
-				}
+				$url[2] = array_merge($url[2], array('query' => $newQueryParams));
 			}
 			
 			$url = call_user_func_array($urlHelper, $url);
@@ -87,9 +90,9 @@ class Sortlink extends AbstractHtmlTranslatorHelper
 		}
 		
 		// Object header
-		$xhtml = '<a' . $this->htmlAttribs($attributes) . '>' . self::EOL
-		. $label . self::EOL
-		. (($renderCaret) ? ' <span class="caret' . ($sort === 'desc' ? ' caret-up' : '') . '"></span>' . self::EOL : '') 
+		$xhtml = '<a' . $this->htmlAttribs($attributes) . '>' . PHP_EOL
+		. $label . PHP_EOL
+		. (($renderCaret) ? ' <span class="caret' . ($sort === 'desc' ? ' caret-up' : '') . '"></span>' . PHP_EOL : '') 
 		. '</a>';
 		
 		return $xhtml;

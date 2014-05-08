@@ -75,6 +75,7 @@ class GroupController extends AbstractActionController
         
         $formManager = $this->getServiceLocator()->get('FormElementManager');
         $form = $formManager->get('Registry\Form\Group');
+        $group->setDefaultGroup($this->objectManager->getReference('Registry\Entity\UserGroup', 1));
         $form->bind($group);
         
         $url = $this->url()->fromRoute('groups/default', array('action' => 'edit'), array('query' => array('id' => $group->getId())));
@@ -92,6 +93,10 @@ class GroupController extends AbstractActionController
         		// Obtener la rendicion creada con FORM
         		$this->objectManager->persist($group);
         		$this->objectManager->flush();
+
+                // Trigger events
+                // TODO Actualizar groups
+                $this->getEventManager()->trigger('edit.group', $this, array('group' => $group));
         
         		$this->fm(_('Grupo guardado'));
         		return $this->redirect()->toRoute('groups', array('action' => 'index'));
@@ -141,7 +146,7 @@ class GroupController extends AbstractActionController
         
         	return $this->redirect()->toRoute('groups');
         }
-         
+        
         return array(
             'form' => $form,
             'group' => $group,

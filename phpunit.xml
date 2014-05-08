@@ -10,6 +10,7 @@
     		<directory suffix=".php">./module/Registry/src/</directory>
     		<exclude>
         		<directory suffix=".php">./module/Registry/src/Registry/Entity</directory>
+                <file>./module/Registry/src/Registry/View/Helper/DebugBarFactory.php</file>
         	</exclude>
     	</whitelist>
 	</filter>

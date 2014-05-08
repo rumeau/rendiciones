@@ -75,10 +75,10 @@ class UserController extends AbstractActionController
 				$bcrypt->setCost($service->getOptions()->getPasswordCost());
 				$user->setCredential($bcrypt->create($form->get('user')->getValue('password')));
 				
-				$this->getEventManager()->trigger('create.user', $this, array('user' => $user, 'form' => $form));
-				
 				$this->objectManager->persist($user);
 				$this->objectManager->flush();
+
+				$this->getEventManager()->trigger('create.user', $this, array('user' => $user, 'form' => $form));
 				
 				$this->fm(_('Usuario guardado'));
 				return $this->redirect()->toRoute('users', array('action' => 'index'));
@@ -102,6 +102,8 @@ class UserController extends AbstractActionController
 		$formManager = $this->getServiceLocator()->get('FormElementManager');
 		$form = $formManager->get('Registry\Form\User');
 		$form->bind($user);
+
+		$currentUserStatus = $user->getStatus();
 		
 		$url = $this->url()->fromRoute('users/default', array('action' => 'edit'), array('query' => array('id' => $user->getId())));
 		$prg = $this->prg($url, true);
@@ -141,11 +143,17 @@ class UserController extends AbstractActionController
 					}
 				}
 				
-				$this->getEventManager()->trigger('create.user', $this, array('user' => $user, 'form' => $form));
-				
-				
 				$this->objectManager->persist($user);
 				$this->objectManager->flush();
+
+				$this->getEventManager()->trigger('edit.user', $this, array('user' => $user, 'form' => $form));
+				if ($currentUserStatus != $user->getStatus()) {
+					if ($user->getStatus() === 1) {
+						$this->getEventManager()->trigger('activate.user', $this, array('user' => $user, 'form' => $form));
+					} elseif ($user->getStatus() === 2) {
+						$this->getEventManager()->trigger('deactivate.user', $this, array('user' => $user, 'form' => $form));
+					}
+				}
 				
 				$this->fm(_('Usuario guardado'));
 				if ($errorPassword) {
@@ -201,7 +209,7 @@ class UserController extends AbstractActionController
 			
 			// Trigger events
 			$this->getEventManager()->trigger('delete.user', $this, array('user' => $user));
-		
+
 			$this->objectManager->remove($user);
 			$this->objectManager->flush();
 		
