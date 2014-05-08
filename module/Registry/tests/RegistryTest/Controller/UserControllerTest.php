@@ -5,7 +5,7 @@ namespace RegistryTest\Controller;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 use Zend\Session\Container;
 
-class IndexControllerTest extends AbstractHttpControllerTestCase
+class UserControllerTest extends AbstractHttpControllerTestCase
 {
     protected $traceError = true;
     
