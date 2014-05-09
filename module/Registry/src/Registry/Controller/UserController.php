@@ -249,6 +249,8 @@ class UserController extends AbstractActionController
         ) {
             $prg['user']['moderatedGroups'] = array();
         }
+
+        return $prg;
     }
 
     protected function checkAndHashPassword($form, $user)
