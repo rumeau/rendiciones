@@ -1,5 +1,4 @@
 <?php
-
 namespace RegistryTest\Controller;
 
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
@@ -22,7 +21,7 @@ class UserControllerTest extends AbstractHttpControllerTestCase
     /**
      * Crea un mock de autenticacion con un usuario administrador
      */
-    public function mockAuth($admin = true)
+    public function mockAuth()
     {
         $serviceManager = $this->getApplicationServiceLocator();
         $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
@@ -73,5 +72,28 @@ class UserControllerTest extends AbstractHttpControllerTestCase
         $this->dispatch('/users/create');
 
         $this->assertResponseStatusCode(200);
+    }
+
+    public function testCreateActionPRG()
+    {
+        $this->dispatch('/users/create', 'POST', array());
+
+        $this->assertResponseStatusCode(303);
+    }
+
+    public function testCreateActionInvalidForm()
+    {
+        $post = new Container('prg_post1');
+        $post->post = array(
+            'formcsrf' => 'testhash',
+            'user' => array()
+        );
+
+        $csrf = new Container('Zend_Validator_Csrf_salt_formcsrf');
+        $csrf->hash = 'testhash';
+
+        $this->dispatch('/users/create');
+
+        $this->assertResponseStatusCode(302);
     }
 }
