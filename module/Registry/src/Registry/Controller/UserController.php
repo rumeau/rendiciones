@@ -51,7 +51,7 @@ class UserController extends AbstractActionController
             return $prg;
         } elseif (is_array($prg)) {
             // PROCESAR FORMULARIO
-            $prg = $this->cleanPRG($prg, $user);
+            $prg = $this->cleanPRG($prg);
 
             $form->setValidationGroup(
                 array(
@@ -118,7 +118,7 @@ class UserController extends AbstractActionController
         if ($prg instanceof \Zend\Http\Response) {
             return $prg;
         } elseif (is_array($prg)) {
-            $prg = $this->cleanPRG($prg, $user, false);
+            $prg = $this->cleanPRG($prg, $user->getId());
 
             // PROCESAR FORMULARIO
             $validationGroup = array('formcsrf', 'user' => array(
@@ -240,9 +240,8 @@ class UserController extends AbstractActionController
         );
     }
 
-    protected function cleanPRG($prg, $user, $create = true)
+    protected function cleanPRG($prg, $user = '')
     {
-        $user = $create ? $user->getId() : '';
         $prg['user']['id'] = $user;
         $prg['user']['userRoles'] = $this->fixPostUserRoles($prg);
         if (!in_array('3', $prg['user']['userRoles'])
