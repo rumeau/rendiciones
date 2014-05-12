@@ -53,14 +53,8 @@ class UserController extends AbstractActionController
             // PROCESAR FORMULARIO
             $prg = $this->cleanPRG($prg);
 
-            $form->setValidationGroup(
-                array(
-                    'formcsrf',
-                    'user' => array(
-                        'name', 'identity', 'password', 'password_c', 'email', 'userGroup',
-                        'workPhone', 'homePhone', 'mobilePhone', 'address', 'userRoles', 'moderatedGroups')
-                )
-            );
+            $validationGroup = $this->getValidationGroup($prg);
+            $form->setValidationGroup($validationGroup);
 
             $form->setData($prg);
             if ($form->isValid()) {
@@ -72,7 +66,8 @@ class UserController extends AbstractActionController
                 // Encriptar y establecer credencial
                 $bcrypt = new Bcrypt();
                 $bcrypt->setCost($service->getOptions()->getPasswordCost());
-                $user->setCredential($bcrypt->create($form->get('user')->getValue('password')));
+                $newPassword = $form->get('user')->get('password_n')->getValue();
+                $user->setCredential($bcrypt->create($newPassword));
 
                 $this->objectManager->persist($user);
                 $this->objectManager->flush();
@@ -121,22 +116,15 @@ class UserController extends AbstractActionController
             $prg = $this->cleanPRG($prg, $user->getId());
 
             // PROCESAR FORMULARIO
-            $validationGroup = array('formcsrf', 'user' => array(
-                'id', 'name', 'status', 'email', 'userGroup', 'workPhone',
-                'homePhone', 'mobilePhone', 'address', 'userRoles', 'moderatedGroups'));
-
-            if (!empty($prg['user']['password'])) {
-                $validationGroup = array_merge(
-                    $validationGroup,
-                    array('user' => array('password_o', 'password', 'password_c'))
-                );
-            }
+            $validationGroup = $this->getValidationGroup($prg, true);
             $form->setValidationGroup($validationGroup);
+
             $form->setData($prg);
             if ($form->isValid()) {
                 // Obtener la rendicion creada con FORM
                 $errorPassword = false;
-                if ($form->get('user')->getValue('password') != '') {
+                $newPassword = $form->get('user')->get('password_n')->getValue();
+                if ($newPassword != '') {
                     // Encriptar y establecer credencial
                     $errorPassword = $this->checkAndHashPassword($form, $user);
                 }
@@ -150,7 +138,7 @@ class UserController extends AbstractActionController
                 $this->fm(_('Usuario guardado'));
                 if ($errorPassword) {
                     return $this->redirect()->toRoute(
-                        'users/defaut',
+                        'users/default',
                         array('action' => 'edit'),
                         array('query' => array('id' => $user->getId()))
                     );
@@ -182,15 +170,8 @@ class UserController extends AbstractActionController
             return $this->redirect()->toRoute('users', array('action' => 'index'));
         }
 
-        $queryRegistries = $this->objectManager->createQuery(
-            'SELECT COUNT(r) FROM Registry\Entity\Registry r WHERE r.user = :USER AND r.status = :STATUS'
-        );
-        $queryRegistries->setParameters(
-            array('USER' => $user,
-                'STATUS' => Registry::REGISTRY_STATUS_PENDING)
-        );
-        $pending = $queryRegistries->getSingleScalarResult();
-        if ((int) $pending > 0) {
+        $pending  = $this->findUserPendingRegistries($user);
+        if ($pending > 0) {
             $this->fm(
                 _(
                     'El usuario tiene rendiciones pendientes de revision, ' .
@@ -240,6 +221,24 @@ class UserController extends AbstractActionController
         );
     }
 
+    protected function getValidationGroup($prg, $edit = false)
+    {
+        if (!$edit) {
+            $validationGroup = array('formcsrf', 'user' => array(
+                'name', 'identity', 'email', 'userGroup', 'workPhone', 'password_n', 'password_c',
+                'homePhone', 'mobilePhone', 'address', 'userRoles', 'moderatedGroups'));
+        } else {
+            $validationGroup = array('formcsrf', 'user' => array(
+                'name', 'status', 'email', 'userGroup', 'workPhone',
+                'homePhone', 'mobilePhone', 'address', 'userRoles', 'moderatedGroups'));
+            if (!empty($prg['user']['password_n'])) {
+                $validationGroup['user'] = array_merge($validationGroup['user'], array('password_o', 'password_n', 'password_c'));
+            }
+        }
+
+        return $validationGroup;
+    }
+
     protected function cleanPRG($prg, $user = '')
     {
         $prg['user']['id'] = $user;
@@ -256,16 +255,18 @@ class UserController extends AbstractActionController
     protected function checkAndHashPassword($form, $user)
     {
         $bcrypt = new Bcrypt();
-        $oldPassword = $form->get('user')->getValue('password_o');
+        $oldPassword = $form->get('user')->get('password_o')->getValue();
+        $newPassword = $form->get('user')->get('password_n')->getValue();
+
         $service = $this->getServiceLocator()->get('zfcuser_user_service');
+        $bcrypt->setCost($service->getOptions()->getPasswordCost());
         if (!$bcrypt->verify($oldPassword, $user->getCredential())) {
             $this->fm(_('La clave actual no es valida'), 'error');
 
             return true;
         }
 
-        $bcrypt->setCost($service->getOptions()->getPasswordCost());
-        $user->setCredential($bcrypt->create($form->get('user')->getValue('password')));
+        $user->setCredential($bcrypt->create($newPassword));
 
         return false;
     }
@@ -296,5 +297,19 @@ class UserController extends AbstractActionController
                 $this->getEventManager()->trigger('deactivate.user', $this, array('user' => $user, 'form' => $form));
             }
         }
+    }
+
+    protected function findUserPendingRegistries($user)
+    {
+        $queryRegistries = $this->objectManager->createQuery(
+            'SELECT COUNT(r) FROM Registry\Entity\Registry r WHERE r.user = :USER AND r.status = :STATUS'
+        );
+        $queryRegistries->setParameters(
+            array('USER' => $user,
+                'STATUS' => Registry::REGISTRY_STATUS_PENDING)
+        );
+        $pending = $queryRegistries->getSingleScalarResult();
+
+        return (int) $pending;
     }
 }
