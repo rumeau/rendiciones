@@ -64,7 +64,7 @@ class UserRole implements HierarchicalRoleInterface
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -74,7 +74,7 @@ class UserRole implements HierarchicalRoleInterface
     /**
      * Set roleId
      *
-     * @param string $roleId
+     * @param  string   $roleId
      * @return UserRole
      */
     public function setRoleId($roleId)
@@ -87,7 +87,7 @@ class UserRole implements HierarchicalRoleInterface
     /**
      * Get roleId
      *
-     * @return string 
+     * @return string
      */
     public function getRoleId()
     {
@@ -97,7 +97,7 @@ class UserRole implements HierarchicalRoleInterface
     /**
      * Set isDefault
      *
-     * @param integer $isDefault
+     * @param  integer  $isDefault
      * @return UserRole
      */
     public function setIsDefault($isDefault)
@@ -110,7 +110,7 @@ class UserRole implements HierarchicalRoleInterface
     /**
      * Get isDefault
      *
-     * @return integer 
+     * @return integer
      */
     public function getIsDefault()
     {
@@ -120,7 +120,7 @@ class UserRole implements HierarchicalRoleInterface
     /**
      * Set parentId
      *
-     * @param \Registry\Entity\UserRole $parentId
+     * @param  \Registry\Entity\UserRole $parentId
      * @return UserRole
      */
     public function setParentId(\Registry\Entity\UserRole $parentId)
@@ -133,7 +133,7 @@ class UserRole implements HierarchicalRoleInterface
     /**
      * Get parentId
      *
-     * @return \Registry\Entity\UserRole 
+     * @return \Registry\Entity\UserRole
      */
     public function getParentId()
     {
@@ -143,7 +143,7 @@ class UserRole implements HierarchicalRoleInterface
     /**
      * Add user
      *
-     * @param \Registry\Entity\User $user
+     * @param  \Registry\Entity\User $user
      * @return UserRole
      */
     public function addUser(\Registry\Entity\User $user)
@@ -166,17 +166,17 @@ class UserRole implements HierarchicalRoleInterface
     /**
      * Get user
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUser()
     {
         return $this->user;
     }
-    
+
     /**
      * INTERFACE METHODS
      */
-    
+
     public function getParent()
     {
         return $this->parentId;

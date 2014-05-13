@@ -14,10 +14,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Item
 {
-	const ITEM_STATUS_PENDING = 0;
-	const ITEM_STATUS_APPROVED = 1;
-	const ITEM_STATUS_REJECTED = 2;
-	
+    const ITEM_STATUS_PENDING = 0;
+    const ITEM_STATUS_APPROVED = 1;
+    const ITEM_STATUS_REJECTED = 2;
+
     /**
      * @var integer
      *
@@ -64,49 +64,49 @@ class Item
      * @ORM\Column(name="item_number", type="integer", precision=0, scale=0, nullable=true, unique=false)
      */
     private $itemNumber;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="item_identifier", type="string", precision=0, scale=0, nullable=true, unique=false)
      */
     private $itemIdentifier;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="item_name", type="string", precision=0, scale=0, nullable=true, unique=false)
      */
     private $itemName;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="item_date", type="date", precision=0, scale=0, nullable=true, unique=false)
      */
     private $itemDate;
-    
+
     /**
      * @var float
      *
      * @ORM\Column(name="item_gross", type="float", length=19, precision=0, scale=0, nullable=true, unique=false)
      */
     private $itemGross;
-    
+
     /**
      * @var float
      *
      * @ORM\Column(name="item_vat", type="float", length=19, precision=0, scale=0, nullable=true, unique=false)
      */
     private $itemVat;
-    
+
     /**
      * @var float
      *
      * @ORM\Column(name="item_total", type="float", length=19, precision=0, scale=0, nullable=true, unique=false)
      */
     private $itemTotal;
-    
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
@@ -148,7 +148,7 @@ class Item
      * @Gedmo\Versioned
      */
     private $modifiedBy;
-    
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
@@ -169,7 +169,7 @@ class Item
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -179,7 +179,7 @@ class Item
     /**
      * Set description
      *
-     * @param string $description
+     * @param  string $description
      * @return Item
      */
     public function setDescription($description)
@@ -192,7 +192,7 @@ class Item
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -202,7 +202,7 @@ class Item
     /**
      * Set createdDate
      *
-     * @param \DateTime $createdDate
+     * @param  \DateTime $createdDate
      * @return Item
      */
     public function setCreatedDate($createdDate)
@@ -215,7 +215,7 @@ class Item
     /**
      * Get createdDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedDate()
     {
@@ -225,7 +225,7 @@ class Item
     /**
      * Set modifiedDate
      *
-     * @param \DateTime $modifiedDate
+     * @param  \DateTime $modifiedDate
      * @return Item
      */
     public function setModifiedDate($modifiedDate)
@@ -238,7 +238,7 @@ class Item
     /**
      * Get modifiedDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getModifiedDate()
     {
@@ -248,7 +248,7 @@ class Item
     /**
      * Set status
      *
-     * @param integer $status
+     * @param  integer $status
      * @return Item
      */
     public function setStatus($status)
@@ -261,7 +261,7 @@ class Item
     /**
      * Get status
      *
-     * @return integer 
+     * @return integer
      */
     public function getStatus()
     {
@@ -270,169 +270,169 @@ class Item
 
     /**
      * Set itemNumber
-     * 
-     * @param integer $itemNumber
+     *
+     * @param  integer $itemNumber
      * @return Item
      */
     public function setItemNumber($itemNumber)
     {
-    	$this->itemNumber = $itemNumber;
-    	
-    	return $this;
+        $this->itemNumber = $itemNumber;
+
+        return $this;
     }
-    
+
     /**
      * Get itemNumber
-     * 
+     *
      * @return integer
      */
     public function getItemNumber()
     {
-    	return $this->itemNumber;
+        return $this->itemNumber;
     }
-    
+
     /**
      * Set itemIdentifier
-     * 
-     * @param string $itemIdentifier
+     *
+     * @param  string $itemIdentifier
      * @return Item
      */
     public function setItemIdentifier($itemIdentifier)
     {
-    	$this->itemIdentifier = $itemIdentifier;
-    	
-    	return $this;
+        $this->itemIdentifier = $itemIdentifier;
+
+        return $this;
     }
-    
+
     /**
      * Get itemIdentifier
-     * 
+     *
      * @return string
      */
     public function getItemIdentifier()
     {
-    	return $this->itemIdentifier;
+        return $this->itemIdentifier;
     }
-    
+
     /**
      * Set itemName
-     * 
-     * @param string $itemName
+     *
+     * @param  string $itemName
      * @return Item
      */
     public function setItemName($itemName)
     {
-    	$this->itemName = $itemName;
-    	
-    	return $this;
+        $this->itemName = $itemName;
+
+        return $this;
     }
-    
+
     /**
      * Get itemName
-     * 
+     *
      * @return string
      */
     public function getItemName()
     {
-    	return $this->itemName;
+        return $this->itemName;
     }
-    
+
     /**
      * Set itemDate
-     * 
-     * @param DateTime $itemDate
+     *
+     * @param  DateTime $itemDate
      * @return Item
      */
     public function setItemDate($itemDate)
     {
-    	$this->itemDate = $itemDate;
-    	
-    	return $this;
+        $this->itemDate = $itemDate;
+
+        return $this;
     }
-    
+
     /**
      * Get itemDate
-     * 
+     *
      * @return DateTime
      */
     public function getItemDate()
     {
-    	return $this->itemDate;
+        return $this->itemDate;
     }
-    
+
     /**
      * Set itemGross
-     * 
-     * @param float $itemGross
+     *
+     * @param  float $itemGross
      * @return Item
      */
     public function setItemGross($itemGross)
     {
-    	$this->itemGross = $itemGross;
-    	
-    	return $this;
+        $this->itemGross = $itemGross;
+
+        return $this;
     }
-    
+
     /**
      * Get itemGross
-     * 
+     *
      * @return float
      */
     public function getItemGross()
     {
-    	return $this->itemGross;
+        return $this->itemGross;
     }
-    
+
     /**
      * Set itemVat
-     * 
-     * @param float $itemVat
+     *
+     * @param  float $itemVat
      * @return Item
      */
     public function setItemVat($itemVat)
     {
-    	$this->itemVat = $itemVat;
-    	
-    	return $this;
+        $this->itemVat = $itemVat;
+
+        return $this;
     }
-    
+
     /**
      * Get itemVat
-     * 
+     *
      * @return float
      */
     public function getItemVat()
     {
-    	return $this->itemVat;
+        return $this->itemVat;
     }
-    
+
     /**
      * Set itemVat
-     * 
-     * @param float $itemTotal
+     *
+     * @param  float $itemTotal
      * @return Item
      */
     public function setItemTotal($itemTotal)
     {
-    	$this->itemTotal = $itemTotal;
-    	
-    	return $this;
+        $this->itemTotal = $itemTotal;
+
+        return $this;
     }
-    
+
     /**
      * Get itemVat
-     * 
+     *
      * @return float
      */
     public function getItemTotal()
     {
-    	return $this->itemTotal;
+        return $this->itemTotal;
     }
 
     /**
      * Add comments
      *
-     * @param \Registry\Entity\Comment $comments
+     * @param  \Registry\Entity\Comment $comments
      * @return Item
      */
     public function addComment(\Registry\Entity\Comment $comments)
@@ -455,7 +455,7 @@ class Item
     /**
      * Get comments
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getComments()
     {
@@ -465,7 +465,7 @@ class Item
     /**
      * Set registry
      *
-     * @param \Registry\Entity\Registry $registry
+     * @param  \Registry\Entity\Registry $registry
      * @return Item
      */
     public function setRegistry(\Registry\Entity\Registry $registry)
@@ -478,7 +478,7 @@ class Item
     /**
      * Get registry
      *
-     * @return \Registry\Entity\Registry 
+     * @return \Registry\Entity\Registry
      */
     public function getRegistry()
     {
@@ -488,7 +488,7 @@ class Item
     /**
      * Set document
      *
-     * @param \Registry\Entity\Document $document
+     * @param  \Registry\Entity\Document $document
      * @return Item
      */
     public function setDocument(\Registry\Entity\Document $document)
@@ -501,7 +501,7 @@ class Item
     /**
      * Get document
      *
-     * @return \Registry\Entity\Document 
+     * @return \Registry\Entity\Document
      */
     public function getDocument()
     {
@@ -511,7 +511,7 @@ class Item
     /**
      * Set modifiedBy
      *
-     * @param \Registry\Entity\User $modifiedBy
+     * @param  \Registry\Entity\User $modifiedBy
      * @return Item
      */
     public function setModifiedBy(\Registry\Entity\User $modifiedBy = null)
@@ -524,34 +524,34 @@ class Item
     /**
      * Get modifiedBy
      *
-     * @return \Registry\Entity\User 
+     * @return \Registry\Entity\User
      */
     public function getModifiedBy()
     {
         return $this->modifiedBy;
     }
-    
+
     /**
      * Add file
      *
-     * @param \Registry\Entity\File $file
+     * @param  \Registry\Entity\File $file
      * @return Item
      */
     public function addFile(\Registry\Entity\File $file)
     {
-    	$file->setItem($this);
+        $file->setItem($this);
         $this->files[] = $file;
 
         return $this;
     }
-    
+
     public function addFiles(\Doctrine\Common\Collections\Collection $files)
     {
-    	foreach ($files as $file) {
-    		$this->addFile($file);
-    	}
-    	
-    	return $this;
+        foreach ($files as $file) {
+            $this->addFile($file);
+        }
+
+        return $this;
     }
 
     /**
@@ -564,18 +564,18 @@ class Item
         $this->files->removeElement($file);
         $file->setItem(null);
     }
-    
+
     public function removeFiles(\Doctrine\Common\Collections\Collection $files)
     {
-    	foreach ($files as $file) {
-    		$this->removeFile($file);
-    	}
+        foreach ($files as $file) {
+            $this->removeFile($file);
+        }
     }
 
     /**
      * Get files
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getFiles()
     {

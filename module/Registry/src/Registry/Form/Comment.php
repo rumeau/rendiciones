@@ -2,29 +2,17 @@
 namespace Registry\Form;
 
 use Zend\Form\Form;
-use DoctrineModule\Persistence\ObjectManagerAwareInterface;
-use DoctrineModule\Persistence\ProvidesObjectManager;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 
-class Comment extends Form implements ObjectManagerAwareInterface
+class Comment extends Form
 {
-	use ProvidesObjectManager;
-	
-	public function init()
-	{
-		$this->setHydrator(new DoctrineHydrator($this->getObjectManager()));
-		$this->setObject(new \Registry\Entity\Comment());
-		
-		$this->add(array(
-			'type' => 'Textarea',
-			'name' => 'comment',
-			'options' => array(
-				'label' => _('Comentario'),
-				'label_attributes' => array('class' => 'required'),
-			),
-			'attributes' => array(
-				'placeholder' => _('Comentario'),
-			),
-		));
-	}
+    public function init()
+    {
+        $this->add(array(
+            'type' => 'Registry\Form\Comment\Comment',
+            'name' => 'comment',
+            'options' => array(
+                'use_as_base_fieldset' => true,
+            ),
+        ));
+    }
 }

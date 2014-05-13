@@ -58,7 +58,7 @@ class File
     /**
      * @var \Registry\Entity\Item
      *
-     * @ORM\ManyToOne(targetEntity="Registry\Entity\Item", inversedBy="files")
+     * @ORM\ManyToOne(targetEntity="Registry\Entity\Item", inversedBy="files", cascade={"ALL"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="itemId", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * })
@@ -75,11 +75,10 @@ class File
      */
     private $registry;
 
-
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -89,7 +88,7 @@ class File
     /**
      * Set path
      *
-     * @param string $path
+     * @param  string $path
      * @return File
      */
     public function setPath($path)
@@ -102,7 +101,7 @@ class File
     /**
      * Get path
      *
-     * @return string 
+     * @return string
      */
     public function getPath()
     {
@@ -112,7 +111,7 @@ class File
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string $name
      * @return File
      */
     public function setName($name)
@@ -125,7 +124,7 @@ class File
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -135,7 +134,7 @@ class File
     /**
      * Set mimeType
      *
-     * @param string $mimeType
+     * @param  string $mimeType
      * @return File
      */
     public function setMimeType($mimeType)
@@ -148,7 +147,7 @@ class File
     /**
      * Get mimeType
      *
-     * @return string 
+     * @return string
      */
     public function getMimeType()
     {
@@ -158,7 +157,7 @@ class File
     /**
      * Set size
      *
-     * @param string $size
+     * @param  string $size
      * @return File
      */
     public function setSize($size)
@@ -171,7 +170,7 @@ class File
     /**
      * Get size
      *
-     * @return string 
+     * @return string
      */
     public function getSize()
     {
@@ -181,7 +180,7 @@ class File
     /**
      * Set item
      *
-     * @param \Registry\Entity\Item $item
+     * @param  \Registry\Entity\Item $item
      * @return File
      */
     public function setItem(\Registry\Entity\Item $item = null)
@@ -194,7 +193,7 @@ class File
     /**
      * Get item
      *
-     * @return \Registry\Entity\Item 
+     * @return \Registry\Entity\Item
      */
     public function getItem()
     {
@@ -204,7 +203,7 @@ class File
     /**
      * Set registry
      *
-     * @param \Registry\Entity\Registry $registry
+     * @param  \Registry\Entity\Registry $registry
      * @return File
      */
     public function setRegistry(\Registry\Entity\Registry $registry = null)
@@ -217,7 +216,7 @@ class File
     /**
      * Get registry
      *
-     * @return \Registry\Entity\Registry 
+     * @return \Registry\Entity\Registry
      */
     public function getRegistry()
     {

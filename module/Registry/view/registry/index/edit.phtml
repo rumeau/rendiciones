@@ -85,8 +85,8 @@ $form->setAttribute('action', $this->url('registry/default', array('action' => '
 			<a href="<?=$this->url('registry/default', array('action' => 'delete'), array('query' => array('id' => $this->id)));?>" class="btn btn-labeled btn-danger">
 				<span class="btn-label"><?=$this->glyphicon('remove');?></span>
 				<?=$this->translate('Descartar rendicion');?></a>
-			<button type="submit" name="task" value="draft" class="btn btn-labeled btn-info"><span class="btn-label"><i class="glyphicon glyphicon-floppy-disk"></i></span><?=$this->translate('Guardar Borrador');?></button>
-			<button type="submit" name="task" value="save" class="btn btn-labeled btn-primary"><span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span><?=$this->translate('Publicar Rendicion');?></button>
+			<button type="submit" name="registry[task]" value="draft" class="btn btn-labeled btn-info"><span class="btn-label"><i class="glyphicon glyphicon-floppy-disk"></i></span><?=$this->translate('Guardar Borrador');?></button>
+			<button type="submit" name="registry[task]" value="save" class="btn btn-labeled btn-primary"><span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span><?=$this->translate('Publicar Rendicion');?></button>
 		</div>
 	</div>
 	

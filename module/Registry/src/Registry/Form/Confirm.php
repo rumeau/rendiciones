@@ -14,10 +14,10 @@ class Confirm extends Form implements InputFilterProviderInterface
         if (! isset($options['element'])) {
             throw new \Zend\Form\Exception\InvalidArgumentException('An element option is required to confirm it');
         }
-        
+
         $this->element = $options['element'];
         unset($options['element']);
-        
+
         parent::__construct('confirm', $options);
     }
 
@@ -32,7 +32,7 @@ class Confirm extends Form implements InputFilterProviderInterface
                 )
             )
         );
-        
+
         $this->add(array(
             'type' => 'Csrf',
             'name' => 'csrf'

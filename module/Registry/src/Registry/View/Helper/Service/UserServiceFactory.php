@@ -20,7 +20,7 @@ class UserServiceFactory implements FactoryInterface
                 $helper->setAllowedModeratorIds($configHelper['allowed_moderators_ids']);
             }
             if (isset($configHelper['allowed_admins_ids'])) {
-            	$helper->setAllowedAdminIds($configHelper['allowed_admins_ids']);
+                $helper->setAllowedAdminIds($configHelper['allowed_admins_ids']);
             }
         }
 

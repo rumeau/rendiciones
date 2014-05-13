@@ -12,18 +12,18 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Document
 {
-	const DOCUMENT_TYPE_BILL = 1;
-	const DOCUMENT_TYPE_INVOICE = 2;
-	
-	public static $types = array(
-		self::DOCUMENT_TYPE_BILL => array(
-			'label' => 'Boleta',
-		),
-		self::DOCUMENT_TYPE_INVOICE => array(
-			'label' => 'Factura',
-		),
-	);
-	
+    const DOCUMENT_TYPE_BILL = 1;
+    const DOCUMENT_TYPE_INVOICE = 2;
+
+    public static $types = array(
+        self::DOCUMENT_TYPE_BILL => array(
+            'label' => 'Boleta',
+        ),
+        self::DOCUMENT_TYPE_INVOICE => array(
+            'label' => 'Factura',
+        ),
+    );
+
     /**
      * @var integer
      *
@@ -39,7 +39,7 @@ class Document
      * @ORM\Column(name="`name`", type="string", precision=0, scale=0, nullable=false, unique=false)
      */
     private $name;
-    
+
     /**
      * @var string
      *
@@ -50,7 +50,7 @@ class Document
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -60,7 +60,7 @@ class Document
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string   $name
      * @return Document
      */
     public function setName($name)
@@ -73,7 +73,7 @@ class Document
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -94,7 +94,7 @@ class Document
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {

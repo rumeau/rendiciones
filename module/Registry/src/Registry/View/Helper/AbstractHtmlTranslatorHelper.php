@@ -7,34 +7,34 @@ use Zend\I18n\Translator\TranslatorInterface as Translator;
 
 abstract class AbstractHtmlTranslatorHelper extends AbstractHtmlElement implements TranslatorAwareInterface
 {
-	/**
-	 * Translator (optional)
-	 *
-	 * @var Translator
-	 */
-	protected $translator;
-	
-	/**
-	 * Translator text domain (optional)
-	 *
-	 * @var string
-	 */
-	protected $translatorTextDomain = 'default';
-	
-	/**
-	 * Whether translator should be used
-	 *
-	 * @var bool
-	 */
-	protected $translatorEnabled = true;
-	
-	/**
+    /**
+     * Translator (optional)
+     *
+     * @var Translator
+     */
+    protected $translator;
+
+    /**
+     * Translator text domain (optional)
+     *
+     * @var string
+     */
+    protected $translatorTextDomain = 'default';
+
+    /**
+     * Whether translator should be used
+     *
+     * @var bool
+     */
+    protected $translatorEnabled = true;
+
+    /**
      * Sets translator to use in helper
      *
-     * @param  Translator $translator  [optional] translator.
-     *                                 Default is null, which sets no translator.
-     * @param  string     $textDomain  [optional] text domain
-     *                                 Default is null, which skips setTranslatorTextDomain
+     * @param  Translator     $translator [optional] translator.
+     *                                    Default is null, which sets no translator.
+     * @param  string         $textDomain [optional] text domain
+     *                                    Default is null, which skips setTranslatorTextDomain
      * @return AbstractHelper
      */
     public function setTranslator(Translator $translator = null, $textDomain = null)
@@ -74,12 +74,13 @@ abstract class AbstractHtmlTranslatorHelper extends AbstractHtmlElement implemen
     /**
      * Sets whether translator is enabled and should be used
      *
-     * @param  bool $enabled
+     * @param  bool           $enabled
      * @return AbstractHelper
      */
     public function setTranslatorEnabled($enabled = true)
     {
         $this->translatorEnabled = (bool) $enabled;
+
         return $this;
     }
 
@@ -96,12 +97,13 @@ abstract class AbstractHtmlTranslatorHelper extends AbstractHtmlElement implemen
     /**
      * Set translation text domain
      *
-     * @param  string $textDomain
+     * @param  string         $textDomain
      * @return AbstractHelper
      */
     public function setTranslatorTextDomain($textDomain = 'default')
     {
         $this->translatorTextDomain = $textDomain;
+
         return $this;
     }
 

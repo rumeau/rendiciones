@@ -73,6 +73,7 @@ class GroupController extends AbstractActionController
 
         if (!is_object($group)) {
             $this->fm(_('El grupo seleccionado no ha sido encontrado'));
+
             return $this->redirect()->toRoute('groups');
         }
 
@@ -86,7 +87,7 @@ class GroupController extends AbstractActionController
             array('action' => 'edit'),
             array('query' => array('id' => $group->getId()))
         );
-        
+
         $prg = $this->prg($url, true);
         if ($prg instanceof \Zend\Http\Response) {
             return $prg;

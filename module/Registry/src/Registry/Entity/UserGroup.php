@@ -17,7 +17,7 @@ class UserGroup
     /**
      *
      * @var integer
-     * 
+     *
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -27,7 +27,7 @@ class UserGroup
     /**
      *
      * @var string
-     * 
+     *
      * @ORM\Column(name="`name`", type="string", length=40, nullable=false)
      */
     private $name;
@@ -35,7 +35,7 @@ class UserGroup
     /**
      *
      * @var string
-     * 
+     *
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
@@ -43,14 +43,14 @@ class UserGroup
     /**
      *
      * @var integer
-     * 
+     *
      * @ORM\Column(name="`status`", type="integer", length=1)
      */
     private $status = 1;
-    
+
     /**
      * @var integer
-     * 
+     *
      * @ORM\Column(name="is_default", type="integer", length=1)
      */
     private $isDefault = 0;
@@ -58,11 +58,11 @@ class UserGroup
     /**
      *
      * @var \Doctrine\Common\Collections\Collection
-     * 
+     *
      * @ORM\OneToMany(targetEntity="Registry\Entity\User", mappedBy="userGroup", cascade={"ALL"})
      */
     private $users;
-    
+
     /**
      *
      * @var \Doctrine\Common\Collections\Collection
@@ -110,7 +110,7 @@ class UserGroup
 
     /**
      * Get name
-     * 
+     *
      * @return string
      */
     public function getName()
@@ -120,20 +120,20 @@ class UserGroup
 
     /**
      * Set name
-     * 
+     *
      * @param string
      * @return Group
      */
     public function setName($name)
     {
         $this->name = $name;
-        
+
         return $this;
     }
 
     /**
      * Get description
-     * 
+     *
      * @return string
      */
     public function getDescription()
@@ -143,20 +143,20 @@ class UserGroup
 
     /**
      * Set description
-     * 
+     *
      * @param string
      * @return Group
      */
     public function setDescription($description)
     {
         $this->description = $description;
-        
+
         return $this;
     }
 
     /**
      * Get status
-     * 
+     *
      * @return integer
      */
     public function getStatus()
@@ -166,33 +166,33 @@ class UserGroup
 
     /**
      * Set status
-     * 
+     *
      * @param integer
-     * @return Group            
+     * @return Group
      */
     public function setStatus($status)
     {
         $this->status = $status;
-        
+
         return $this;
     }
-    
+
     /**
      * Set isDefault
-     * 
+     *
      * @param integer
      * @return Group
      */
     public function setIsDefault($isDefault)
     {
         $this->isDefault = $isDefault;
-        
+
         return $this;
     }
-    
+
     /**
      * Get isDefault
-     * 
+     *
      * @return integer
      */
     public function getIsDefault()
@@ -212,7 +212,7 @@ class UserGroup
 
     /**
      * Add users
-     * 
+     *
      * @param \Doctrine\Common\Collections\Collection
      * @return Group
      */
@@ -221,33 +221,33 @@ class UserGroup
         foreach ($users as $user) {
             $this->addUser($user);
         }
-        
+
         return $this;
     }
-    
+
     public function addUser(User $user)
     {
         $user->setUserGroup($this);
         $this->users[] = $user;
-        
+
         return $this;
     }
-    
+
     public function removeUsers(\Doctrine\Common\Collections\Collection $users)
     {
         foreach ($users as $user) {
             $this->removeUser($user);
         }
-        
+
         return $this;
     }
-    
+
     public function removeUser(User $user)
     {
         $user->setUserGroup($this->getDefaultGroup());
         $this->users->removeElement($user);
     }
-    
+
     /**
      * Get moderators
      *
@@ -255,9 +255,9 @@ class UserGroup
      */
     public function getModerators()
     {
-    	return $this->moderators;
+        return $this->moderators;
     }
-    
+
     /**
      * Add moderators
      *
@@ -266,32 +266,32 @@ class UserGroup
      */
     public function addModerators(\Doctrine\Common\Collections\Collection $moderators)
     {
-    	foreach ($moderators as $moderator) {
-    		$this->addModerator($moderator);
-    	}
-    
-    	return $this;
+        foreach ($moderators as $moderator) {
+            $this->addModerator($moderator);
+        }
+
+        return $this;
     }
-    
+
     public function addModerator(User $moderator)
     {
-    	$this->moderators[] = $moderator;
-    
-    	return $this;
+        $this->moderators[] = $moderator;
+
+        return $this;
     }
-    
+
     public function removeModerators(\Doctrine\Common\Collections\Collection $moderators)
     {
-    	foreach ($moderators as $moderator) {
-    		$this->removeModerator($moderator);
-    	}
-    
-    	return $this;
+        foreach ($moderators as $moderator) {
+            $this->removeModerator($moderator);
+        }
+
+        return $this;
     }
-    
+
     public function removeModerator(User $moderator)
     {
-    	$moderator->removeModeratedGroup($this);
-    	$this->moderators->removeElement($moderator);
+        $moderator->removeModeratedGroup($this);
+        $this->moderators->removeElement($moderator);
     }
 }

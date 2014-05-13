@@ -59,8 +59,8 @@ $form->setAttribute('class', 'form-horizontal');
 		<div class="col-lg-10 col-offset-lg-2">
 			<?=$this->formhidden($form->get('formcsrf'));?>
 			<a href="<?=$this->url('registry');?>" class="btn btn-labeled btn-default"><span class="btn-label"><i class="glyphicon glyphicon-arrow-left"></i></span><?=$this->translate('Cancelar');?></a>
-			<button type="submit" name="task" value="draft" class="btn btn-labeled btn-info"><span class="btn-label"><i class="glyphicon glyphicon-floppy-disk"></i></span><?=$this->translate('Guardar Borrador');?></button>
-			<button type="submit" name="task" value="save" class="btn btn-labeled btn-primary"><span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span><?=$this->translate('Publicar Rendicion');?></button>
+			<button type="submit" name="registry[task]" value="draft" class="btn btn-labeled btn-info"><span class="btn-label"><i class="glyphicon glyphicon-floppy-disk"></i></span><?=$this->translate('Guardar Borrador');?></button>
+			<button type="submit" name="registry[task]" value="save" class="btn btn-labeled btn-primary"><span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span><?=$this->translate('Publicar Rendicion');?></button>
 		</div>
 	</div>
 	

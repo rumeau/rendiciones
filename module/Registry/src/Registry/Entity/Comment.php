@@ -82,11 +82,10 @@ class Comment
      */
     private $author;
 
-
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -96,7 +95,7 @@ class Comment
     /**
      * Set comment
      *
-     * @param string $comment
+     * @param  string  $comment
      * @return Comment
      */
     public function setComment($comment)
@@ -109,7 +108,7 @@ class Comment
     /**
      * Get comment
      *
-     * @return string 
+     * @return string
      */
     public function getComment()
     {
@@ -119,7 +118,7 @@ class Comment
     /**
      * Set createdDate
      *
-     * @param \DateTime $createdDate
+     * @param  \DateTime $createdDate
      * @return Comment
      */
     public function setCreatedDate($createdDate)
@@ -132,7 +131,7 @@ class Comment
     /**
      * Get createdDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedDate()
     {
@@ -142,7 +141,7 @@ class Comment
     /**
      * Set modifiedDate
      *
-     * @param \DateTime $modifiedDate
+     * @param  \DateTime $modifiedDate
      * @return Comment
      */
     public function setModifiedDate($modifiedDate)
@@ -155,7 +154,7 @@ class Comment
     /**
      * Get modifiedDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getModifiedDate()
     {
@@ -165,7 +164,7 @@ class Comment
     /**
      * Set status
      *
-     * @param integer $status
+     * @param  integer $status
      * @return Comment
      */
     public function setStatus($status)
@@ -178,7 +177,7 @@ class Comment
     /**
      * Get status
      *
-     * @return integer 
+     * @return integer
      */
     public function getStatus()
     {
@@ -188,7 +187,7 @@ class Comment
     /**
      * Set item
      *
-     * @param \Registry\Entity\Item $item
+     * @param  \Registry\Entity\Item $item
      * @return Comment
      */
     public function setItem(\Registry\Entity\Item $item = null)
@@ -201,7 +200,7 @@ class Comment
     /**
      * Get item
      *
-     * @return \Registry\Entity\Item 
+     * @return \Registry\Entity\Item
      */
     public function getItem()
     {
@@ -211,7 +210,7 @@ class Comment
     /**
      * Set registry
      *
-     * @param \Registry\Entity\Registry $registry
+     * @param  \Registry\Entity\Registry $registry
      * @return Comment
      */
     public function setRegistry(\Registry\Entity\Registry $registry = null)
@@ -224,7 +223,7 @@ class Comment
     /**
      * Get registry
      *
-     * @return \Registry\Entity\Registry 
+     * @return \Registry\Entity\Registry
      */
     public function getRegistry()
     {
@@ -234,7 +233,7 @@ class Comment
     /**
      * Set author
      *
-     * @param \Registry\Entity\User $author
+     * @param  \Registry\Entity\User $author
      * @return Comment
      */
     public function setAuthor(\Registry\Entity\User $author = null)
@@ -247,7 +246,7 @@ class Comment
     /**
      * Get author
      *
-     * @return \Registry\Entity\User 
+     * @return \Registry\Entity\User
      */
     public function getAuthor()
     {

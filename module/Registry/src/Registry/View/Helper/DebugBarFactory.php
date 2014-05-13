@@ -15,7 +15,7 @@ class DebugBarFactory implements FactoryInterface
 {
 
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param  ServiceLocatorInterface $serviceLocator
      * @return DebugBar
      */
     public function createService(ServiceLocatorInterface $serviceLocator)

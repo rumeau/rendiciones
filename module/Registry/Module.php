@@ -91,4 +91,24 @@ class Module implements AutoloaderProviderInterface
     	
     	return array();
     }
+
+    public function getServiceConfig()
+    {
+        return array(
+            'initializers' => array(
+                'EntityManager' => function ($instance, $sm) {
+                    if ($instance instanceof EntityManager\EntityManagerAwareInterface) {
+                        $instance->setEntityManager($sm->get('Zend\Db\Adapter\Adapter'));
+                    }
+                    return $instance;
+                },
+                'ObjectManager' => function ($instance, $sm) {
+                    if ($instance instanceof \DoctrineModule\Persistence\ObjectManagerAwareInterface) {
+                        $instance->setObjectManager($sm->get('doctrine.entitymanager.orm_default'));
+                    }
+                    return $instance;
+                }
+            )
+        );
+    }
 }

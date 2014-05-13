@@ -9,7 +9,7 @@ $form->prepare();
 	
 		<h3><?=$this->zfcuserdisplayname();?></h3>
 		
-		<?=$this->formrow($form->get('comment'));?>
+		<?=$this->formrow($form->get('comment')->get('comment'));?>
 	
 		<div class="form-group text-right">
 			<button type="submit" class="btn btn-primary"><?=$this->translate('Publicar comentario');?></button>

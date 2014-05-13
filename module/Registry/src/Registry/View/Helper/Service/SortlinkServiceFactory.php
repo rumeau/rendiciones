@@ -7,10 +7,11 @@ use Registry\View\Helper\Sortlink;
 
 class SortlinkServiceFactory implements FactoryInterface
 {
-	public function createService(ServiceLocatorInterface $serviceLocator)
-	{
-		$sl = $serviceLocator->getServiceLocator();
-		$request = $sl->get('Request');
-		return new Sortlink($request);
-	}
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $sl = $serviceLocator->getServiceLocator();
+        $request = $sl->get('Request');
+
+        return new Sortlink($request);
+    }
 }

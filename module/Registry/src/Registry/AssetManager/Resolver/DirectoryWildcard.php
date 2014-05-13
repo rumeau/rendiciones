@@ -98,12 +98,12 @@ class DirectoryWildcard implements ResolverInterface, MimeResolverAwareInterface
      */
     protected function normalizeWildcard($wildcard)
     {
-    	$key = key($wildcard);
-    	$val = $wildcard[$key];
-    	
-    	$alias = rtrim($key, '/\\');
-    	
-    	$path = rtrim($val, '/\\');
+        $key = key($wildcard);
+        $val = $wildcard[$key];
+
+        $alias = rtrim($key, '/\\');
+
+        $path = rtrim($val, '/\\');
         $path .= DIRECTORY_SEPARATOR;
 
         return array($alias => $path);
@@ -180,18 +180,18 @@ class DirectoryWildcard implements ResolverInterface, MimeResolverAwareInterface
         $file = @basename($name);
         $alias = str_replace($file, '', $name);
         $alias = rtrim($alias, '/\\');
-        
+
         $wildcards = $this->getWildcards();
         foreach ($wildcards as $w) {
-        	if (key($w) != $alias) {
-        		continue;
-        	}
-        	
-        	$file = new SplFileInfo($w[$alias] . $file);
-        	
-        	if ($file->isReadable() && !$file->isDir()) {
-        		$filePath = $file->getRealPath();
-        		$mimeType = $this->getMimeResolver()->getMimeType($filePath);
+            if (key($w) != $alias) {
+                continue;
+            }
+
+            $file = new SplFileInfo($w[$alias] . $file);
+
+            if ($file->isReadable() && !$file->isDir()) {
+                $filePath = $file->getRealPath();
+                $mimeType = $this->getMimeResolver()->getMimeType($filePath);
                 $asset    = new FileAsset($filePath);
 
                 $asset->mimetype = $mimeType;

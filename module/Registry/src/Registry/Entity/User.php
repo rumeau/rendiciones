@@ -16,9 +16,9 @@ use ZfcUser\Entity\UserInterface;
  */
 class User implements UserInterface, ProviderInterface
 {
-	const USER_STATUS_ACTIVE = 1;
-	const USER_STATUS_INACTIVE = 2;
-	
+    const USER_STATUS_ACTIVE = 1;
+    const USER_STATUS_INACTIVE = 2;
+
     /**
      * @var integer
      *
@@ -154,7 +154,7 @@ class User implements UserInterface, ProviderInterface
      * )
      */
     private $userRoles;
-    
+
     /**
      * @var \Registry\Entity\UserGroup
      *
@@ -164,7 +164,7 @@ class User implements UserInterface, ProviderInterface
      * })
      */
     private $userGroup;
-    
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
@@ -193,21 +193,21 @@ class User implements UserInterface, ProviderInterface
 
     /**
      * Set id
-     * 
-     * @param integer $id
+     *
+     * @param  integer $id
      * @return User
      */
     public function setId($id)
     {
         $this->id = $id;
-        
+
         return $this;
     }
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -217,7 +217,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string $name
      * @return User
      */
     public function setName($name)
@@ -230,7 +230,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -240,7 +240,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set identity
      *
-     * @param string $identity
+     * @param  string $identity
      * @return User
      */
     public function setIdentity($identity)
@@ -253,7 +253,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get identity
      *
-     * @return string 
+     * @return string
      */
     public function getIdentity()
     {
@@ -263,7 +263,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set credential
      *
-     * @param string $credential
+     * @param  string $credential
      * @return User
      */
     public function setCredential($credential)
@@ -276,7 +276,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get credential
      *
-     * @return string 
+     * @return string
      */
     public function getCredential()
     {
@@ -286,7 +286,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set email
      *
-     * @param string $email
+     * @param  string $email
      * @return User
      */
     public function setEmail($email)
@@ -299,7 +299,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -309,7 +309,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set mobilePhone
      *
-     * @param string $mobilePhone
+     * @param  string $mobilePhone
      * @return User
      */
     public function setMobilePhone($mobilePhone)
@@ -322,7 +322,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get mobilePhone
      *
-     * @return string 
+     * @return string
      */
     public function getMobilePhone()
     {
@@ -332,7 +332,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set homePhone
      *
-     * @param string $homePhone
+     * @param  string $homePhone
      * @return User
      */
     public function setHomePhone($homePhone)
@@ -345,7 +345,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get homePhone
      *
-     * @return string 
+     * @return string
      */
     public function getHomePhone()
     {
@@ -355,7 +355,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set workPhone
      *
-     * @param string $workPhone
+     * @param  string $workPhone
      * @return User
      */
     public function setWorkPhone($workPhone)
@@ -368,7 +368,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get workPhone
      *
-     * @return string 
+     * @return string
      */
     public function getWorkPhone()
     {
@@ -378,7 +378,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set address
      *
-     * @param string $address
+     * @param  string $address
      * @return User
      */
     public function setAddress($address)
@@ -391,7 +391,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get address
      *
-     * @return string 
+     * @return string
      */
     public function getAddress()
     {
@@ -401,7 +401,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set options
      *
-     * @param array $options
+     * @param  array $options
      * @return User
      */
     public function setOptions($options)
@@ -414,7 +414,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get options
      *
-     * @return array 
+     * @return array
      */
     public function getOptions()
     {
@@ -424,7 +424,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set createdDate
      *
-     * @param \DateTime $createdDate
+     * @param  \DateTime $createdDate
      * @return User
      */
     public function setCreatedDate($createdDate)
@@ -437,7 +437,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get createdDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedDate()
     {
@@ -447,7 +447,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set modifiedDate
      *
-     * @param \DateTime $modifiedDate
+     * @param  \DateTime $modifiedDate
      * @return User
      */
     public function setModifiedDate($modifiedDate)
@@ -460,7 +460,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get modifiedDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getModifiedDate()
     {
@@ -470,7 +470,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set status
      *
-     * @param integer $status
+     * @param  integer $status
      * @return User
      */
     public function setStatus($status)
@@ -483,7 +483,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get status
      *
-     * @return integer 
+     * @return integer
      */
     public function getStatus()
     {
@@ -493,7 +493,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Set hash
      *
-     * @param string $hash
+     * @param  string $hash
      * @return User
      */
     public function setHash($hash)
@@ -506,7 +506,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get hash
      *
-     * @return string 
+     * @return string
      */
     public function getHash()
     {
@@ -516,7 +516,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Add registries
      *
-     * @param \Registry\Entity\Registry $registries
+     * @param  \Registry\Entity\Registry $registries
      * @return User
      */
     public function addRegistry(\Registry\Entity\Registry $registries)
@@ -539,7 +539,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get registries
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRegistries()
     {
@@ -549,7 +549,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Add comments
      *
-     * @param \Registry\Entity\Comment $comments
+     * @param  \Registry\Entity\Comment $comments
      * @return User
      */
     public function addComment(\Registry\Entity\Comment $comments)
@@ -572,7 +572,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Get comments
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getComments()
     {
@@ -582,7 +582,7 @@ class User implements UserInterface, ProviderInterface
     /**
      * Add userRole
      *
-     * @param \Registry\Entity\UserRole $userRole
+     * @param  \Registry\Entity\UserRole $userRole
      * @return User
      */
     public function addUserRole(\Registry\Entity\UserRole $userRole)
@@ -591,14 +591,14 @@ class User implements UserInterface, ProviderInterface
 
         return $this;
     }
-    
+
     public function addUserRoles(\Doctrine\Common\Collections\Collection $userRoles)
     {
-    	foreach ($userRoles as $userRole) {
-    		$this->addUserRole($userRole);
-    	}
-    	
-    	return $this;
+        foreach ($userRoles as $userRole) {
+            $this->addUserRole($userRole);
+        }
+
+        return $this;
     }
 
     /**
@@ -610,37 +610,37 @@ class User implements UserInterface, ProviderInterface
     {
         $this->userRoles->removeElement($userRole);
     }
-    
+
     public function removeUserRoles(\Doctrine\Common\Collections\Collection $userRoles)
     {
-    	foreach ($userRoles as $userRole) {
-    		$this->removeUserRole($userRole);
-    	}
+        foreach ($userRoles as $userRole) {
+            $this->removeUserRole($userRole);
+        }
     }
 
     /**
      * Get userRole
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUserRoles()
     {
         return $this->userRoles;
     }
-    
+
     /**
      * Set userGroup
      *
-     * @param \Registry\Entity\UserGroup $userGroup
+     * @param  \Registry\Entity\UserGroup $userGroup
      * @return User
      */
     public function setUserGroup(\Registry\Entity\UserGroup $userGroup)
     {
-    	$this->userGroup = $userGroup;
-    
-    	return $this;
+        $this->userGroup = $userGroup;
+
+        return $this;
     }
-    
+
     /**
      * Get userGroup
      *
@@ -648,32 +648,32 @@ class User implements UserInterface, ProviderInterface
      */
     public function getUserGroup()
     {
-    	return $this->userGroup;
+        return $this->userGroup;
     }
-    
+
     /**
      * Add moderatedGroup
      *
-     * @param \Registry\Entity\UserGroup $moderatedGroup
+     * @param  \Registry\Entity\UserGroup $moderatedGroup
      * @return User
      */
     public function addModeratedGroup(\Registry\Entity\UserGroup $moderatedGroup)
     {
         $moderatedGroup->addModerator($this);
-    	$this->moderatedGroups[] = $moderatedGroup;
-    
-    	return $this;
+        $this->moderatedGroups[] = $moderatedGroup;
+
+        return $this;
     }
-    
+
     public function addModeratedGroups(\Doctrine\Common\Collections\Collection $moderatedGroups)
     {
-    	foreach ($moderatedGroups as $moderatedGroup) {
-    		$this->addModeratedGroup($moderatedGroup);
-    	}
-    	 
-    	return $this;
+        foreach ($moderatedGroups as $moderatedGroup) {
+            $this->addModeratedGroup($moderatedGroup);
+        }
+
+        return $this;
     }
-    
+
     /**
      * Remove moderatedGroup
      *
@@ -683,14 +683,14 @@ class User implements UserInterface, ProviderInterface
     {
         $this->moderatedGroups->removeElement($moderatedGroup);
     }
-    
+
     public function removeModeratedGroups(\Doctrine\Common\Collections\Collection $moderatedGroups)
     {
-    	foreach ($moderatedGroups as $moderatedGroup) {
-    		$this->removeModeratedGroup($moderatedGroup);
-    	}
+        foreach ($moderatedGroups as $moderatedGroup) {
+            $this->removeModeratedGroup($moderatedGroup);
+        }
     }
-    
+
     /**
      * Get userGroups
      *
@@ -698,53 +698,53 @@ class User implements UserInterface, ProviderInterface
      */
     public function getModeratedGroups()
     {
-    	return $this->moderatedGroups;
+        return $this->moderatedGroups;
     }
-    
+
     /**
      * INTERFACE METHODS
      */
-    
+
     public function getUsername()
     {
         return $this->getIdentity();
     }
-    
+
     public function setUsername($username)
     {
         $this->setIdentity($username);
     }
-    
+
     public function getDisplayName()
     {
         return $this->getName();
     }
-    
+
     public function setDisplayName($displayName)
     {
         $this->setName($displayName);
     }
-    
+
     public function getPassword()
     {
         return $this->getCredential();
     }
-    
+
     public function setPassword($password)
     {
         $this->setCredential($password);
     }
-    
+
     public function getState()
     {
         return $this->getStatus();
     }
-    
+
     public function setState($state)
     {
         $this->setStatus($state);
     }
-    
+
     public function getRoles()
     {
         return $this->getUserRoles();
