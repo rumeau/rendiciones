@@ -22,8 +22,8 @@ class ReviewController extends AbstractActionController
 
     public function indexAction()
     {
-        $q = $this->objectManager->createQueryBuilder();
-        $q->select('r as registry', 'SUM(i.itemTotal) as total', 'u.name as user')
+        $query = $this->objectManager->createQueryBuilder();
+        $query->select('r as registry', 'SUM(i.itemTotal) as total', 'u.name as user')
             ->from('Registry\Entity\Registry', 'r')
             ->leftJoin('Registry\Entity\Item', 'i', 'WITH', 'i.registry = r')
             ->join('Registry\Entity\User', 'u', 'WITH', 'r.user = u')
@@ -36,7 +36,7 @@ class ReviewController extends AbstractActionController
             ));
 
         if (!$this->user()->isAdmin()) {
-            $q->join('Registry\Entity\User', 'm', 'WITH', 'm = :USER AND u.userGroup MEMBER OF m.moderatedGroups')
+            $query->join('Registry\Entity\User', 'm', 'WITH', 'm = :USER AND u.userGroup MEMBER OF m.moderatedGroups')
                 ->setParameter('USER', $this->zfcUserAuthentication()->getIdentity());
 
         }
@@ -44,13 +44,13 @@ class ReviewController extends AbstractActionController
         $search = $this->params()->fromQuery('q', '');
         $search = preg_replace('/\.|\,|\-/', '', $search);
         if (!empty($search)) {
-            $q->andWhere($q->expr()->orX('u.identity LIKE :SEARCH', 'u.name LIKE :SEARCH'))
+            $query->andWhere($query->expr()->orX('u.identity LIKE :SEARCH', 'u.name LIKE :SEARCH'))
                 ->setParameter('SEARCH', "%$search%");
         }
 
         $status = $this->params()->fromQuery('filter', -1);
         if ($status >= 0) {
-            $q->andWhere('r.status = :STATUS')
+            $query->andWhere('r.status = :STATUS')
                 ->setParameter('STATUS', $status);
         }
 
@@ -63,12 +63,12 @@ class ReviewController extends AbstractActionController
         );
 
         $sortParams = $this->sortParams($orderMap);
-        $q->orderBy($sortParams->by, $sortParams->sort);
+        $query->orderBy($sortParams->by, $sortParams->sort);
         if ($sortParams->by == 'r.status') {
-            $q->orderBy('r.number', 'desc');
+            $query->orderBy('r.number', 'desc');
         }
 
-        $registries = new ZendPaginator(new DoctrinePaginatorAdapter(new DoctrinePaginator($q, false)));
+        $registries = new ZendPaginator(new DoctrinePaginatorAdapter(new DoctrinePaginator($query, false)));
 
         return array(
             'registries' => $registries,
@@ -86,16 +86,12 @@ class ReviewController extends AbstractActionController
     {
         // Procesar cambio de estados
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $forward = $this->forward()->dispatch('Registry\Controller\Review', array('action' => 'view-ajax'));
-
-            return $forward;
+            return $this->forward()->dispatch('Registry\Controller\Review', array('action' => 'view-ajax'));
         }
 
-        $id = $this->params()->fromQuery('id', 0);
-        $registry = $this->objectManager->find('Registry\Entity\Registry', $id);
-        if (!is_object($registry) || !$this->registry($registry)->canModerate()) {
+        $registry = $this->getRegistry();
+        if (!$registry) {
             $this->fm(_('La rendicion solicitada no pudo ser encontrada'), 'error');
-
             return $this->redirect()->toRoute('review', array('action' => 'index'));
         }
 
@@ -125,7 +121,14 @@ class ReviewController extends AbstractActionController
         }
 
         $commentsForm = $formManager->get('Registry\Form\Comment');
-        $commentsForm->setAttribute('action', $this->url()->fromRoute('review/default', array('action' => 'comment'), array('query' => array('id' => $registry->getId()))));
+        $commentsForm->setAttribute(
+            'action',
+            $this->url()->fromRoute(
+                'review/comment',
+                array('action' => 'comment'),
+                array('query' => array('id' => $registry->getId()))
+            )
+        );
 
         return array(
             'form' => $form,
@@ -147,9 +150,8 @@ class ReviewController extends AbstractActionController
             ));
         }
 
-        $id = $this->params()->fromQuery('id', 0);
-        $registry = $this->objectManager->find('Registry\Entity\Registry', $id);
-        if (!is_object($registry) || !$this->registry($registry)->canModerate()) {
+        $registry = $this->getRegistry();
+        if (!$registry) {
             return $viewModel->setVariables(array(
                 'result' => false,
                 'err' => 0,
@@ -187,98 +189,6 @@ class ReviewController extends AbstractActionController
             'value' => $item->getStatus(),
             'oldValue' => $oldStatus,
             'msg' => _('El estado del item ha sido modificado')
-        ));
-    }
-
-    public function commentAction()
-    {
-        if ($this->getRequest()->isXmlHttpRequest()) {
-            return $this->forward()->dispatch('Registry\Controller\Review', array('action' => 'comment-ajax'));
-        }
-
-        $id = $this->params()->fromQuery('id', 0);
-        $registry = $this->objectManager->find('Registry\Entity\Registry', $id);
-        if (!is_object($registry) || !$this->registry($registry)->canModerate()) {
-            $this->fm(_('La rendicion solicitada no pudo ser encontrada'), 'error');
-
-            return $this->redirect()->toRoute('review', array('action' => 'index'));
-        }
-
-        if ($this->registry($registry)->canModerate() || $this->registry($registry)->canEdit()) {
-            $formManager = $this->getServiceLocator()->get('FormElementManager');
-            $form = $formManager->get('Registry\Form\Comment');
-
-            $url = $this->url()->fromRoute('review/default', array('action' => 'comment'), array('query' => array('id' => $registry->getId())));
-            $form->setAttribute('action', $url);
-
-            $prg = $this->prg($url, true);
-            if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
-                return $prg;
-            } elseif (is_array($prg)) {
-                // Validar formulario de eliminacion
-                $form->setData($prg);
-                if (!$form->isValid() || $form->get('comment')->getValue() == '') {
-                    $this->fm(_('El comentario no pudo ser publicado'), 'error');
-                    $helper = $this->getServiceLocator()->get('viewhelpermanager')->get('htmlList');
-                    $this->fm($helper($form->getMessages()), 'error');
-
-                    return $this->redirect()->toRoute('review/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));
-                }
-
-                $comment = $form->getObject();
-                $comment->setAuthor($this->zfcUserAuthentication()->getIdentity());
-                $comment->setRegistry($registry);
-
-                $this->objectManager->persist($comment);
-                $this->objectManager->flush();
-
-                $this->fm(_('El comentario ha sido publicado'), 'success');
-
-                $url = $this->url()->fromRoute('review/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));
-
-                return $this->redirect()->toUrl($url . '#comment-' . $comment->getId());
-            }
-        }
-
-        $this->fm(_('No tiene acceso a esta seccion'), 'error');
-
-        return $this->redirect()->toRoute('review');
-    }
-
-    /**
-     * Llamada ajax a comentarios
-     * Actualmente solo para eliminar comentario
-     *
-     * @return ViewModel
-     */
-    public function commentAjaxAction()
-    {
-        $viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
-
-        if (!$this->getRequest()->isPost()) {
-            return $viewModel->setVariables(array(
-                'result' => false,
-                'err' => 0,
-                'msg' => _('Llamada invalida')
-            ));
-        }
-
-        $id = $this->params()->fromPost('comment', 0);
-        $comment = $this->objectManager->find('Registry\Entity\Comment', $id);
-        if (!is_object($comment) || ($this->zfcUserAuthentication()->getIdentity() !== $comment->getAuthor() && !$this->registry($comment->getRegistry())->canModerate())) {
-            return $viewModel->setVariables(array(
-                    'result' => false,
-                    'err' => 0,
-                    'msg' => _('El comentario solicitado no pudo ser encontrado')
-            ));
-        }
-
-        $this->objectManager->remove($comment);
-        $this->objectManager->flush();
-
-        return $viewModel->setVariables(array(
-                'result' => true,
-                'msg' => _('El comentario ha sido eliminado')
         ));
     }
 
@@ -340,5 +250,18 @@ class ReviewController extends AbstractActionController
         $this->fm(_('Se ha vuelto a abrir la rendicion'), 'success');
 
         return $this->redirect()->toRoute('review/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));
+    }
+
+    protected function getRegistry()
+    {
+        $rid = $this->params()->fromQuery('id', 0);
+
+        $registry = $this->objectManager->find('Registry\Entity\Registry', $rid);
+
+        if (!is_object($registry) || !$this->registry($registry)->canModerate()) {
+            return false;
+        }
+
+        return $registry;
     }
 }

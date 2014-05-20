@@ -23,8 +23,11 @@ return array(
             	
             	array('route' => 'registry', 'roles' => array('user')),
             	array('route' => 'registry/default', 'roles' => array('user')),
+                array('route' => 'registry/comment', 'roles' => array('user')),
+                
             	array('route' => 'review', 'roles' => array('moderator', 'administrator')),
             	array('route' => 'review/default', 'roles' => array('moderator', 'administrator')),
+                array('route' => 'review/comment', 'roles' => array('moderator', 'administrator')),
             	
             	array('route' => 'users', 'roles' => array('administrator')),
             	array('route' => 'users/default', 'roles' => array('administrator')),
@@ -38,6 +41,7 @@ return array(
             	array('controller' => 'Registry\Controller\Review', 'action' => array('index', 'view', 'comment'), 'roles' => array('moderator', 'administrator')),
             	array('controller' => 'Registry\Controller\User',   'action' => array('index', 'create', 'edit', 'delete'), 'roles' => array('administrator')),
                 array('controller' => 'Registry\Controller\Group',   'action' => array('index', 'create', 'edit', 'delete'), 'roles' => array('administrator')),
+                array('controller' => 'Registry\Controller\Comment', 'action' => array('comment'), 'roles' => array('user', 'moderator', 'administrator')),
             ),
         ),
         

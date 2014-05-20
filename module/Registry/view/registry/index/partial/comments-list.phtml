@@ -9,7 +9,7 @@
 	<?php else : ?>
 	<?php $count = 0; foreach ($comments as $comment) : $count++;?>
 	<div class="media" id="comment-<?=$comment->getId();?>">
-		<a class="pull-left" href="<?=$this->url($this->route . '/default', array('action' => 'view'), array('query' => array('id' => $registry->getId())));?>#comment-<?=$comment->getId();?>">
+		<a class="pull-left" href="<?=$this->url($this->route, array('action' => 'view'), array('query' => array('id' => $registry->getId())));?>#comment-<?=$comment->getId();?>">
 			<strong>#<?=$count;?></strong>
 		</a>
 		<div class="media-body">
@@ -39,8 +39,13 @@ $('button[data-remove]').click(function(e) {
 	
 	$button = $(this);
 	
+	<?php
+	$parentRoute = strpos($this->route, '/default') ? $this->route : 'home/dummy';
+	$parentRoute = explode('/', $parentRoute);
+	$parentRoute = $parentRoute[0];
+	?>
 	$.ajax({
-		url: '<?=$this->url($this->route . '/default', array('action' => 'comment'));?>',
+		url: '<?=$this->url("$parentRoute/comment");?>',
 		method: 'post',
 		data: {
 			comment: $button.data('remove'),
@@ -54,6 +59,9 @@ $('button[data-remove]').click(function(e) {
 		success: function(j) {
 			if (j.result) {
 				$button.closest('.media').remove();
+				if ($('.comments .media').length === 0) {
+					$('.comments').append('<p class="lead"><?=$this->translate('No existen comentarios');?></p>');
+				}
 			} else {
 				$button.closest('.media').removeClass('text-muted');
 				$button.attr('disabled', false);

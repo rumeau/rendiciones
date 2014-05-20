@@ -6,7 +6,7 @@
 <?php $this->headlink()->appendStylesheet('//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.1/css/jasny-bootstrap.min.css');?>
 
 <div class="page-header">
-	<h1><?=$this->translate('Editar Rendicion');?><small><?=$this->translate('Borrador');?></small></h1>
+	<h1><?=$this->translate('Editar Rendicion');?>&nbsp;<small><?=$this->translate('Borrador');?></small></h1>
 </div>
 
 <?php
@@ -56,7 +56,10 @@ $form->setAttribute('action', $this->url('registry/default', array('action' => '
 							<?php $oItem = $item->getObject(); ?>
 							<?php foreach ($oItem->getFiles() as $file) : ?>
 							<div class="thumbnail tile tile-teal">
-								<img src="<?=$this->basepath('userfiles/' . $file->getName());?>">
+								<?php $imageUrl = $this->cloudfrontlink($file->getPath()); ?>
+								<?php //$imageUrl = $this->basepath('userfiles/' . $file->getName()); ?>
+								<img src="<?=$imageUrl;?>">
+								<button data-remove-image="<?=$file->getId();?>" type="button" class="close image-remover" aria-hidden="true">&times;</button>
 							</div>
 							<?php endforeach; ?>
 						</div>
@@ -111,6 +114,36 @@ $form->setAttribute('action', $this->url('registry/default', array('action' => '
 	$(document).on('click', '.clear-panel', function() {
 		$(this).closest('.panel').remove();
 	});
+
+	$(document).on('click', '.panel .image-remover', function(e) {
+		if (!confirm('<?=$this->translate('Esta sguro que desea elimiar esta imagen');?>')) {
+			e.preventDefault();
+			return false;
+		}
+
+		var $this = $(this);
+
+		$.ajax({
+			url: '<?=$this->url('registry/default', array('action' => 'edit'));?>',
+			method: 'post',
+			data: {
+				rid: <?=$this->id;?>,
+				fid: $this.data('remove-image')
+			},
+			dataType: 'json',
+			beforeSend: function() {
+				$this.attr('disabled', true);
+			},
+			success: function(j) {
+				if (j.result) {
+					$this.closest('.thumbnail.tile').remove();
+				} else {
+					alert(j.msg);
+					$this.removeAttr('disabled');
+				}
+			}
+		});
+	});
 	
 	$('button[data-aggregator="item"]').click(function() {
 		var panels = $('form > #accordion > .panel');
@@ -144,8 +177,8 @@ $form->setAttribute('action', $this->url('registry/default', array('action' => '
 			panel.find('input.totalVat').closest('.form-group').hide(); // Hide VAT
 		}
 		
-		panel.find('input[type="file"]').fancyFileInput();
-		panel.find('.ffi').addClass('theme-bootstrap').addClass('custom-image-button');
+		panelContent.find('input[type="file"]').fancyFileInput();
+		panelContent.find('.ffi').addClass('theme-bootstrap').addClass('custom-image-button');
         			
 		return false;
 	});

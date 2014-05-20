@@ -99,7 +99,7 @@ class Registry extends AbstractPlugin
     {
         $isAdmin = $this->getController()->user()->isAdmin();
         $isModerator = $this->getController()->user()->isModerator();
-        if (($isModerator || $isAdmin) && $this->getRegistry()->getStatus() > RegistryEntity::REGISTRY_STATUS_PENDING) {
+        if (($isModerator || $isAdmin) && $this->getRegistry()->getStatus() > RegistryEntity::REGISTRY_STATUS_DRAFT) {
             return true;
         } elseif ($this->getRegistry()->getUser() === $this->getIdentity()) {
             return true;

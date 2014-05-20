@@ -6,7 +6,7 @@ use Zend\Session\Container;
 
 class IndexControllerTest extends AbstractHttpControllerTestCase
 {
-    protected $traceError = true;
+    //protected $traceError = true;
 
     public static $dummyRegistry;
 
@@ -75,7 +75,16 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
     public function testCreateActionPostInvalidForm()
     {
         $post = new Container('file_prg_post1');
-        $post->post = array('formcsrf' => 'testhash', 'registry' => array('items' => array(array('document' => 1))));
+        $post->post = array(
+            'formcsrf' => 'testhash',
+            'registry' => array(
+                'items' => array(
+                    0 => array(
+                        'document' => '1'
+                    )
+                )
+            )
+        );
 
         $csrf = new \Zend\Session\Container('Zend_Validator_Csrf_salt_formcsrf');
         $csrf->hash = 'testhash';

@@ -166,4 +166,130 @@ class Item extends Fieldset implements ObjectManagerAwareInterface
             )
         ));
     }
+
+    public function gesadtInputFilterSpecification()
+    {
+        return array(
+            'itemNumber' => array(
+                'required' => true,
+            ),
+            'itemIdentifier' => array(
+                'required' => true,
+                'validators' => array(
+                    array(
+                        'name' => 'Application\Validator\Rut'
+                    ),
+                ),
+            ),
+            'itemDate' => array(
+                'required' => true,
+                'validators' => array(
+                    array(
+                        'name' => 'Date',
+                        'options' => array(
+                            'format' => 'Y-m-d'
+                        ),
+                    ),
+                ),
+            ),
+            'itemGross' => array(
+                'allow_empty' => true,
+                'filters' => array(
+                    array(
+                        'name' => 'NumberFormat',
+                        'options' => array(
+                            'locale' => 'es_CL',
+                            'type' => \NumberFormatter::TYPE_DOUBLE
+                        ),
+                    ),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'Callback',
+                        'options' => array(
+                            'callback' => function ($value, $context) {
+                                if ($context['document'] == self::DOCUMENT_INVOICE) {
+                                    if (empty($value)) {
+                                        return false;
+                                    }
+                                }
+
+                                return true;
+                            }
+                        ),
+                    ),
+                ),
+            ),
+            'itemVat' => array(
+                'allow_empty' => true,
+                'filters' => array(
+                    array(
+                        'name' => 'NumberFormat',
+                        'options' => array(
+                            'locale' => 'es_CL',
+                            'type' => \NumberFormatter::TYPE_DOUBLE
+                        ),
+                    ),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'Callback',
+                        'options' => array(
+                            'callback' => function ($value, $context) {
+                                if ($context['document'] == self::DOCUMENT_INVOICE) {
+                                    if (empty($value)) {
+                                        return false;
+                                    }
+                                }
+
+                                return true;
+                            }
+                        ),
+                    ),
+                ),
+            ),
+            'itemTotal' => array(
+                'required' => true,
+                'filters' => array(
+                    array(
+                        'name' => 'NumberFormat',
+                        'options' => array(
+                            'locale' => 'es_CL',
+                            'type' => \NumberFormatter::TYPE_DOUBLE
+                        ),
+                    ),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'Callback',
+                        'options' => array(
+                            'callback' => function ($value, $context) {
+                                if ($context['document'] == self::DOCUMENT_INVOICE) {
+                                    $total = $context['itemVat'] + $context['itemGross'];
+                                    if ($value != $total) {
+                                        return false;
+                                    }
+                                }
+
+                                return true;
+                            }
+                        ),
+                    ),
+                ),
+            ),
+            'thefiles' => array(
+                'allow_empty' => true,
+                'type' => 'Zend\InputFilter\FileInput',
+                'filters' => array(
+                    array(
+                        'name' => 'Zend\Filter\File\RenameUpload',
+                        'options' => array(
+                            'target' => realpath(__DIR__ . '/../../../../../../data/tmpuploads'),
+                            'randomize' => true,
+                        ),
+                    ),
+                ),
+            )
+        );
+    }
 }

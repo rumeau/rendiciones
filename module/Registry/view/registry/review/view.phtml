@@ -24,6 +24,7 @@
 			echo '&nbsp;&nbsp;&nbsp;' . $this->label($this->translate('PENDIENTE'), 'label-warning');
 		}
 		?>
+		&nbsp;-&nbsp;<?=$registry->getUser()->getDisplayName();?>
 	</h1>
 </div>
 
@@ -174,10 +175,10 @@
 		</form>
 	</div>
 	
-	<?=$this->partial('registry/index/partial/comments-list.phtml', array('registry' => $registry, 'route' => 'review'));?>
+	<?=$this->partial('registry/index/partial/comments-list.phtml', array('registry' => $registry, 'route' => 'review/default'));?>
 	<?php
 	if ($registry->getStatus() > \Registry\Entity\Registry::REGISTRY_STATUS_DRAFT) {
-		echo $this->partial('registry/index/partial/comments-form.phtml', array('registry' => $registry, 'form' => $this->commentform, 'route' => 'review'));
+		echo $this->partial('registry/index/partial/comments-form.phtml', array('registry' => $registry, 'form' => $this->commentform, 'route' => 'review/comment'));
 	}
 	?>
 	

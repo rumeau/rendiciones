@@ -1,0 +1,42 @@
+<?php $this->headTitle("Nuevo comentario publicado"); ?>
+
+<h3><?=$this->translate("Hola, Usuario/a");?></h3>
+
+<p class="lead"><?=sprintf($this->translate("Se ha publicado un nuevo comentario en la rendicion #%s de %s"), $this->registryNumber, $this->user->getDisplayName());?></p>
+<blockquote><?=$this->comment;?></blockquote>
+
+<p><?=$this->url;?></p>
+
+<!-- Callout Panel -->
+<p class="callout">
+	<?=sprintf($this->translate('Por favor siga <a href="%s">este enlace</a> para visualizar el comentario'), $this->url);?>
+</p><!-- /Callout Panel -->
+
+<!-- social & contact -->
+<table class="social" width="100%">
+	<tr>
+		<td>
+			<!-- column 1 -->
+			<table align="left" class="column">
+				<tr>
+					<td>
+						<h5 class=""><?=$this->translate('Conectate con nosotros');?>:</h5>
+						<p class=""><a href="#" class="soc-btn fb">Facebook</a> <a href="#" class="soc-btn tw">Twitter</a> <a href="#" class="soc-btn gp">Google+</a></p>
+					</td>
+				</tr>
+			</table><!-- /column 1 -->
+
+			<!-- column 2 -->
+			<table align="left" class="column">
+				<tr>
+					<td>                
+						<h5 class=""><?=$this->translate('Contacto');?>:</h5>
+						<p>Email: <strong><a href="emailto:rendiciones@jprumeau.com">rendiciones@jprumeau.com</a></strong></p>
+					</td>
+				</tr>
+			</table><!-- /column 2 -->
+
+			<span class="clear"></span> 
+		</td>
+	</tr>
+</table><!-- /social & contact -->

@@ -4,10 +4,11 @@ namespace Registry;
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Registry\Controller\Index' => 'Registry\Controller\IndexController',
-            'Registry\Controller\Review' => 'Registry\Controller\ReviewController',
-            'Registry\Controller\User' => 'Registry\Controller\UserController',
-            'Registry\Controller\Group' => 'Registry\Controller\GroupController',
+            'Registry\Controller\Index'   => 'Registry\Controller\IndexController',
+            'Registry\Controller\Review'  => 'Registry\Controller\ReviewController',
+            'Registry\Controller\User'    => 'Registry\Controller\UserController',
+            'Registry\Controller\Group'   => 'Registry\Controller\GroupController',
+            'Registry\Controller\Comment' => 'Registry\Controller\CommentController',
         ),
     ),
 
@@ -18,6 +19,7 @@ return array(
         'invokables' => array(
             'sortParams' => 'Registry\Mvc\Controller\Plugin\SortParams',
             'registry' => 'Registry\Mvc\Controller\Plugin\Registry',
+            'filepostredirectget' => 'Registry\Mvc\Controller\Plugin\CustomFilePostRedirectGet'
         ),
     ),
     'controller_plugin_config' => array(
@@ -53,7 +55,7 @@ return array(
                     'default' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/[:controller[/:action]]',
+                            'route'    => '/home/[:controller[/:action]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -81,11 +83,21 @@ return array(
                         'type'    => 'Segment',
                         'options' => array(
                             'route'    => '/[:action]',
-                            'default' => array(
+                            'defaults' => array(
                                 'action' => 'index',
                             ),
                             'constraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                        ),
+                    ),
+                    'comment' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/comment',
+                            'defaults' => array(
+                                'controller' => 'comment',
+                                'action' => 'comment'
                             ),
                         ),
                     ),
@@ -108,11 +120,21 @@ return array(
                         'type'    => 'Segment',
                         'options' => array(
                             'route'    => '/[:action]',
-                            'default' => array(
+                            'defaults' => array(
                                 'action' => 'index',
                             ),
                             'constraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                        ),
+                    ),
+                    'comment' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/comment',
+                            'defaults' => array(
+                                'controller' => 'comment',
+                                'action' => 'comment'
                             ),
                         ),
                     ),
@@ -187,9 +209,6 @@ return array(
 
             'ModelManager' => 'Registry\Model\Service\ModelManagerServiceFactory',
         ),
-        'invokables' => array(
-            'Gedmo\Uploadable' => 'Gedmo\Uploadable\UploadableListener',
-        ),
     ),
 
     'app_registry' => array(
@@ -199,6 +218,7 @@ return array(
     'view_manager' => array(
         'template_map' => array(
             'registry/auth/lohin.phtml' => __DIR__ . '/../view/auth/login.phtml',
+            'layout/mail' => __DIR__ . '/../view/layout/mail.phtml',
         ),
         'template_path_stack' => array(
             'Registry' => __DIR__ . '/../view',
@@ -353,6 +373,35 @@ return array(
 
             'directory_wildcard' => array(
                 'userfiles' => __DIR__ . '/../../../data/uploads',
+            ),
+        ),
+    ),
+
+    'sxmail' => array(
+        'configs' => array(
+            'default' => array(
+                'charset' => 'UTF-8',
+                'transport' => array(
+                    'type'      => 'smtp',
+                    'options'   => array(
+                        'name'              => 'localhost.localdomain',
+                        'host'              => '127.0.0.1',
+                        'connection_class'  => 'login',
+                        'connection_config' => array(
+                            'username' => 'user',
+                            'password' => 'pass',
+                        ),
+                    ),
+                ),
+                'message' => array(
+                    'layout'  => 'layout/mail',
+                    'headers' => array(
+                        'X-Powered-By'      => 'ZF2 and SxMail',
+                    ),
+                    'options' => array(
+                        'from'  => array('no-reply@jprumeau.com', 'No-Reply')
+                    ),
+                ),
             ),
         ),
     ),

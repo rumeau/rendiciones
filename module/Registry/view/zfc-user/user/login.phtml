@@ -10,7 +10,7 @@ $form->setAttribute('method', 'post');
             <div class="panel panel-default">
                 <div class="panel-heading"><?=$this->translate('Iniciar Sesion');?></div>
                 <div class="panel-body">
-                    <?=$this->form()->openTag($form);?>
+                    <?=$this->form(null, null)->openTag($form);?>
                         <?=$this->formrow($form->get('identity')->setOption('control_plugin', 'clear'));?>
                         
                         <?=$this->formrow($form->get('credential')->setOption('control_plugin', 'reveal'));?>

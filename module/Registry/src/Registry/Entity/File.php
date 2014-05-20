@@ -10,7 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Table(name="file")
  * @ORM\Entity
- * @Gedmo\Uploadable(filenameGenerator="SHA1", allowOverwrite=false, appendNumber=true)
+ * @Gedmo\Uploadable(filenameGenerator="SHA1", allowOverwrite=false, appendNumber=true, pathMethod="getPath")
  */
 class File
 {
@@ -58,9 +58,9 @@ class File
     /**
      * @var \Registry\Entity\Item
      *
-     * @ORM\ManyToOne(targetEntity="Registry\Entity\Item", inversedBy="files", cascade={"ALL"})
+     * @ORM\ManyToOne(targetEntity="Registry\Entity\Item", inversedBy="files")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="itemId", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="itemId", referencedColumnName="id", nullable=true)
      * })
      */
     private $item;
@@ -70,10 +70,16 @@ class File
      *
      * @ORM\ManyToOne(targetEntity="Registry\Entity\Registry", inversedBy="files")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="registryId", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="registryId", referencedColumnName="id", nullable=true)
      * })
      */
     private $registry;
+
+    /**
+     * @ORM\Version
+     * @ORM\Column(type="integer")
+     */
+    private $version;
 
     /**
      * Get id
@@ -105,6 +111,14 @@ class File
      */
     public function getPath()
     {
+        if (!$this->path) {
+            return implode('/', array(
+                date('mY'),
+                $this->getRegistry()->getId(),
+                $this->getItem()->getId()
+            ));
+        }
+
         return $this->path;
     }
 
@@ -221,5 +235,23 @@ class File
     public function getRegistry()
     {
         return $this->registry;
+    }
+
+    /**
+     * Set version
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get version
+     */
+    public function getVersion()
+    {
+        return $this->version;
     }
 }

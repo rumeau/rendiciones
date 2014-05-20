@@ -4,23 +4,24 @@ namespace Registry\Form;
 
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
+use DoctrineModule\Persistence\ObjectManagerAwareInterface;
+use DoctrineModule\Persistence\ProvidesObjectManager;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 
 /**
  *
  * @author Jean
  *
  */
-class Registry extends Form
+class Registry extends Form implements ObjectManagerAwareInterface
 {
-    public function __construct()
-    {
-        parent::__construct('registry');
-    }
+    use ProvidesObjectManager;
 
     public function init()
     {
-        $this->setAttribute('method', 'post')
-            ->setInputFilter(new RegistryInputFilter());
+        $this->setHydrator(new DoctrineHydrator($this->getObjectManager()));
+        $this->setObject(new \Registry\Entity\Registry());
+        $this->setAttribute('method', 'post');
 
         $this->add(array(
             'type' => 'Registry\Form\Registry\Registry',

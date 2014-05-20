@@ -116,7 +116,8 @@
 							</span><?=$this->translate('Ver imagenes');?></button>
 						<div class="hide imageGroup">
 							<?php foreach ($item->getFiles() as $file) : ?>
-							<a href="<?=$this->basepath('/userfiles/' . $file->getName());?>" data-lightbox="imageGroup-<?=$item->getId();?>">.</a>
+							<?php $imageUrl = $this->cloudfrontlink($file->getPath()); ?>
+							<a href="<?=$imageUrl;?>" data-lightbox="imageGroup-<?=$item->getId();?>">.</a>
 							<?php endforeach; ?>
 						</div>
 					</div>
@@ -166,10 +167,10 @@
 		<?php endif; ?>
 	</form>
 	
-	<?=$this->partial('registry/index/partial/comments-list.phtml', array('registry' => $registry, 'route' => 'registry'));?>
+	<?=$this->partial('registry/index/partial/comments-list.phtml', array('registry' => $registry, 'route' => 'registry/default'));?>
 	<?php
 	if ($registry->getStatus() > \Registry\Entity\Registry::REGISTRY_STATUS_DRAFT) {
-		echo $this->partial('registry/index/partial/comments-form.phtml', array('registry' => $registry, 'form' => $this->commentform, 'route' => 'registry'));
+		echo $this->partial('registry/index/partial/comments-form.phtml', array('registry' => $registry, 'form' => $this->commentform, 'route' => 'registry/comment'));
 	}
 	?>
 	

@@ -117,6 +117,12 @@ class Registry
     private $files;
 
     /**
+     * @ORM\Version
+     * @ORM\Column(type="integer")
+     */
+    private $version;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -430,5 +436,23 @@ class Registry
     public function getFiles()
     {
         return $this->files;
+    }
+
+    /**
+     * Set version
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Get version
+     */
+    public function getVersion()
+    {
+        return $this->version;
     }
 }

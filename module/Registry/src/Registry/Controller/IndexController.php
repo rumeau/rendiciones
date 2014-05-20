@@ -14,15 +14,19 @@ use Zend\Paginator\Paginator as ZendPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrinePaginatorAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 use Registry\Entity\Registry;
-use Registry\Entity\Item;
 use Registry\Entity\File;
 use Registry\File\FileInfo;
-use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
     const SAVE_REGISTRY_DRAF = 'draft';
     const SAVE_REGISTRY_PUBLISH = 'save';
+
+    protected $acceptCriteria = array(
+        'Zend\View\Model\JsonModel' => array(
+            'application/json',
+        ),
+    );
 
     public function indexAction()
     {
@@ -116,7 +120,7 @@ class IndexController extends AbstractActionController
         $commentsForm->setAttribute(
             'action',
             $this->url()->fromRoute(
-                'registry/default',
+                'registry/comment',
                 array('action' => 'comment'),
                 array('query' => array('id' => $registry->getId()))
             )
@@ -159,8 +163,7 @@ class IndexController extends AbstractActionController
             }
 
             // Form not valid, but file uploads might be valid
-            $items = $form->get('registry')->get('items')->getValue();
-            if ($items === null || !count($items)) {
+            if (!isset($prg['registry']['items'])) {
                 $error = _('Debe agregar al menos un item');
             }
             $tempFiles = $this->persistFiles($form);
@@ -181,6 +184,10 @@ class IndexController extends AbstractActionController
      */
     public function editAction()
     {
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            return $this->forward()->dispatch('Registry\Controller\Index', array('action' => 'edit-ajax'));
+        }
+
         $registry = $this->objectManager->find('Registry\Entity\Registry', $this->params()->fromQuery('id', 0));
         if (!is_object($registry) || $registry->getUser() !== $this->zfcUserAuthentication()->getIdentity()) {
             $this->fm(_('La rendicion seleccionada no ha sido encontrada'), 'error');
@@ -216,8 +223,7 @@ class IndexController extends AbstractActionController
             }
 
             // Form not valid, but file uploads might be valid
-            $items = $form->get('registry')->get('items')->getValue();
-            if ($items === null || !count($items)) {
+            if (!isset($prg['registry']['items'])) {
                 $error = _('Debe agregar al menos un item');
             }
             $tempFiles = $this->persistFiles($form);
@@ -229,6 +235,45 @@ class IndexController extends AbstractActionController
             'error' => $error,
             'tempFiles' => $tempFiles,
         );
+    }
+
+    public function editAjaxAction()
+    {
+        $viewModel = $this->acceptableViewModelSelector($this->acceptCriteria);
+
+        if (!$this->getRequest()->isPost()) {
+            return $viewModel->setVariables(array(
+                'result' => false,
+                'err' => 0,
+                'msg' => _('Llamada invalida')
+            ));
+        }
+
+        $registry = $this->objectManager->find('Registry\Entity\Registry', $this->params()->fromPost('rid', 0));
+        if (!is_object($registry) || !$this->registry($registry)->canEdit()) {
+            return $viewModel->setVariables(array(
+                'result' => false,
+                'err' => 0,
+                'msg' => _('El registro no pudo ser encontrado')
+            ));
+        }
+
+        $image = $this->objectManager->find('Registry\Entity\File', $this->params()->fromPost('fid', 0));
+        if (!is_object($image) || $image->getRegistry() !== $registry) {
+            return $viewModel->setVariables(array(
+                'result' => false,
+                'err' => 0,
+                'msg' => _('La imagen no pudo ser encontrada')
+            ));
+        }
+
+        $this->objectManager->remove($image);
+        $this->objectManager->flush();
+
+        return $viewModel->setVariables(array(
+            'result' => true,
+            'msg' => _('La imagen ha sido eliminada')
+        ));
     }
 
     public function deleteAction()

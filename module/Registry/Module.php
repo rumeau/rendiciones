@@ -24,8 +24,7 @@ class Module implements AutoloaderProviderInterface
             ),
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
-		    // if we're in a namespace deeper than one level we need to fix the \ in the path
-                    __NAMESPACE__ => __DIR__ . '/src/' . str_replace('\\', '/' , __NAMESPACE__),
+                    __NAMESPACE__ => __DIR__ . '/src/' . str_replace('\\', '/', __NAMESPACE__),
                 ),
             ),
         );
@@ -36,76 +35,87 @@ class Module implements AutoloaderProviderInterface
         return include __DIR__ . '/config/module.config.php';
     }
 
-    public function onBootstrap(MvcEvent $e)
+    public function onBootstrap(MvcEvent $event)
     {
         // You may not need to do this if you're doing it elsewhere in your
         // application
-        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager        = $event->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        
-        $sl = $e->getApplication()->getServiceManager();
-        $config = $sl->get('Config');
+
+        $serviceLocator = $event->getApplication()->getServiceManager();
+        $config = $serviceLocator->get('Config');
         $appConfig = isset($config['app_registry']) ? $config['app_registry'] : array();
         if (isset($appConfig['upload_path'])) {
-        	$uploaddableListener = $sl->get('Gedmo\Uploadable');
-        	$uploaddableListener->setDefaultPath(realpath($appConfig['upload_path']));
-        	//$uploaddableListener->setDefaultPath(realpath($appConfig['upload_path']) . DIRECTORY_SEPARATOR . date('mY'));
+            $uploaddableListener = $serviceLocator->get('Gedmo\Uploadable');
+            $uploaddableListener->setDefaultPath($appConfig['upload_path']);
+            //$uploaddableListener->setDefaultPath(realpath($appConfig['upload_path']) . DIRECTORY_SEPARATOR . date('mY'));
         }
-        
+
         $eventManager->attachAggregate(new \Registry\Event\UserListener);
         $eventManager->attachAggregate(new \Registry\Event\RegistryListener);
+        $eventManager->attachAggregate(new \Registry\Event\CommentListener);
+
+        $cloudfrontConfig = isset($config['cloudfront']) ? $config['cloudfront'] : array();
+        if (isset($cloudfrontConfig['domain']) && $serviceLocator->get('ViewHelperManager')->has('cloudfrontlink')) {
+            $cloudfrontHelper = $serviceLocator->get('ViewHelperManager')->get('cloudfrontlink');
+            $cloudfrontHelper->setDefaultDomain($cloudfrontConfig['domain']);
+        }
     }
-    
+
     public function getControllerConfig()
     {
         return array(
-        	'initializers' => array(
-                'ObjectManager' => function($controller, $cm) {
-                    $sl = $cm->getServiceLocator();
-                    $controller->objectManager = $sl->get('doctrine.entitymanager.orm_default');
+            'initializers' => array(
+                'ObjectManager' => function ($controller, $controllerManager) {
+                    $serviceLocator = $controllerManager->getServiceLocator();
+                    $controller->objectManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
+
                     return $controller;
                 }
             )
         );
     }
-    
+
     public function getFormElementConfig()
     {
         return array(
-        	'initializers' => array(
-                'ObjectManager' => function($form, $fm) {
-                	if ($form instanceof ObjectManagerAwareInterface) {
-                    	$sl = $fm->getServiceLocator();
-                    	$form->setObjectManager($sl->get('doctrine.entitymanager.orm_default'));
-                    	return $form;
-                	}
+            'initializers' => array(
+                'ObjectManager' => function ($form, $formManager) {
+                    if ($form instanceof ObjectManagerAwareInterface) {
+                        $serviceLocator = $formManager->getServiceLocator();
+                        $form->setObjectManager($serviceLocator->get('doctrine.entitymanager.orm_default'));
+
+                        return $form;
+                    }
                 }
             )
         );
     }
-    
+
     public function getViewHelperConfig()
     {
-    	\Zend\View\Helper\PaginationControl::setDefaultViewPartial('layout/paginator.phtml');
-    	
-    	return array();
+        \Zend\View\Helper\PaginationControl::setDefaultViewPartial('layout/paginator.phtml');
+
+        return array();
     }
 
     public function getServiceConfig()
     {
         return array(
             'initializers' => array(
-                'EntityManager' => function ($instance, $sm) {
+                'EntityManager' => function ($instance, $serviceLocator) {
                     if ($instance instanceof EntityManager\EntityManagerAwareInterface) {
-                        $instance->setEntityManager($sm->get('Zend\Db\Adapter\Adapter'));
+                        $instance->setEntityManager($serviceLocator->get('Zend\Db\Adapter\Adapter'));
                     }
+
                     return $instance;
                 },
-                'ObjectManager' => function ($instance, $sm) {
+                'ObjectManager' => function ($instance, $serviceLocator) {
                     if ($instance instanceof \DoctrineModule\Persistence\ObjectManagerAwareInterface) {
-                        $instance->setObjectManager($sm->get('doctrine.entitymanager.orm_default'));
+                        $instance->setObjectManager($serviceLocator->get('doctrine.entitymanager.orm_default'));
                     }
+
                     return $instance;
                 }
             )

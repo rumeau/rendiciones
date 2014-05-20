@@ -2,24 +2,28 @@
 return array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
+        'Aws',
+
         'AssetManager',
-        
+
         'DoctrineModule',
         'DoctrineORMModule',
-        
+
+        'SlmMail',
+
         'Application',
-        
+
         'ZfcBase',
         'ZfcUser',
         'ZfcUserDoctrineORM',
         'BjyAuthorize',
-        
-    	'TwbBundle',
-    	'FlashMessenger',
-    	
-    	'Registry',
-    		
-    	//'ZfSnapPhpDebugBar',
+
+        'TwbBundle',
+        'FlashMessenger',
+
+        'Registry',
+
+        //'ZfSnapPhpDebugBar',
     ),
 
     // These are various options for the listeners attached to the ModuleManager
